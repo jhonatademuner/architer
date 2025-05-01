@@ -1,0 +1,73 @@
+{
+    "title": "YouTube-like platform",
+    "overview": "We are designing the core functionality of a YouTube-like platform focused exclusively on video uploading and video watching.",
+    "priorities": [
+        "Reliability in uploads: No video corruption, robust handling of large files.",
+        "Smooth and low-latency streaming: Videos should start quickly and play without buffering.",
+        "Availability over consistency: It's acceptable for some data to be slightly outdated if it improves overall system availability.",
+        "Scalability: The platform must handle massive user activity and video content growth."
+    ],
+    "functional_requirements": [
+        "Users must be able to upload videos reliably, ensuring no corruption during the upload process.",
+        "Users must be able to watch videos smoothly, with minimal startup time and buffering.",
+        "Metadata Management: Store and retrieve basic video metadata (title, description, thumbnail).",
+        "Resumable Uploads: Support for upload resumption in case of connection interruptions."
+    ],
+    "non_functional_requirements": {
+        "scale": [
+            "Support 1 billion daily active users (DAUs).",
+            "Each user watches 5 videos per day on average.",
+            "The platform has a 100:1 watch-to-upload ratio — for every 100 videos watched, 1 new video is uploaded.",
+            "The top 5% of videos account for 90% of all views.",
+            "Support thousands of concurrent viewers per video."
+        ],
+        "availability": [
+            "System must favor availability over consistency (eventual consistency is acceptable for new uploads)."
+        ],
+        "performance": [
+            "Videos should begin playing within a couple of seconds.",
+            "Playback must maintain smooth streaming with minimal buffering."
+        ],
+        "fault_tolerance": [
+            "System should gracefully handle server, storage, or even regional failures without significant service disruption."
+        ],
+        "hot_content_optimization": [
+            "Highly popular videos should be heavily cached and distributed close to users."
+        ]
+    },
+    "discussion_areas": {
+        "upload_path": [
+            "How would uploads be handled to ensure reliability at scale?",
+            "How would you handle large file uploads and enable resumability?"
+        ],
+        "storage_design": [
+            "How would you store video files efficiently across data centers?",
+            "How would you organize and replicate metadata separately from the video content?",
+            "How would you handle redundancy and backup?"
+        ],
+        "serving_videos": [
+            "How would you deliver videos to users with minimal startup latency?",
+            "How would you manage and scale for thousands of concurrent viewers on the same video?",
+            "What caching strategies would you use (e.g., CDNs, edge caches)?"
+        ],
+        "scalability_and_hot_content": [
+            "How would you optimize for extremely popular (hot) videos versus the long tail of rarely-watched videos?",
+            "How would the system scale with growth in users and content?"
+        ],
+        "availability_and_tradeoffs": [
+            "Given the priority of availability over consistency, how would you handle replication lag and data freshness?",
+            "What failover strategies would you implement across regions?"
+        ],
+        "handling_failures": [
+            "How would you design for partial failures (single node, storage failure)?",
+            "What happens if an entire region is offline?"
+        ]
+    },
+    "stretch_topics": [
+        "Adaptive Bitrate Streaming: How would you design support for multiple video qualities and switching between them during playback?",
+        "Video Processing Pipelines: How would uploaded videos be processed, transcoded, and stored in multiple resolutions?",
+        "API Design: How would you design the APIs for upload and watch operations?",
+        "Security and Abuse Prevention: How would you detect and prevent abuse during uploads (e.g., malicious files)?",
+        "Cost Management: How would you balance storage and delivery costs, especially for cold (rarely watched) videos?"
+    ]
+}
