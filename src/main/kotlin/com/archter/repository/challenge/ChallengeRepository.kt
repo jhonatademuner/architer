@@ -1,10 +1,10 @@
 package com.archter.repository.challenge
 
 import com.archter.domain.challenge.Challenge
-import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface ChallengeRepository : MongoRepository<Challenge, UUID> {
+interface ChallengeRepository : JpaRepository<Challenge, UUID> {
 }

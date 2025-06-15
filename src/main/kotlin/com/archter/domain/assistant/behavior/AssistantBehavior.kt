@@ -1,16 +1,16 @@
-package com.archter.domain.challenge
+package com.archter.domain.assistant.behavior
 
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Entity
-@Table(name = "challenges")
+@Table(name = "assistant_behaviors")
 @EntityListeners(AuditingEntityListener::class)
-data class Challenge(
+data class AssistantBehavior(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,7 +36,7 @@ data class Challenge(
     ){
     override fun toString(): String {
         return buildString {
-            appendLine("Challenge")
+            appendLine("Assistant Behavior Configuration")
             appendLine()
             appendLine("Name: $title")
             appendLine("Overview:")

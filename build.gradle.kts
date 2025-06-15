@@ -28,11 +28,17 @@ repositories {
 extra["springAiVersion"] = "1.0.0-M8"
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.postgresql:postgresql:42.7.3")
+	implementation("org.flywaydb:flyway-core:10.21.0")
+	implementation("org.flywaydb:flyway-database-postgresql:10.21.0")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.springframework.ai:spring-ai-starter-model-openai")
+	implementation("ch.qos.logback:logback-classic:1.5.16")
+	implementation("io.github.oshai:kotlin-logging-jvm:4.0.0")
+	implementation("org.slf4j:slf4j-api:2.0.16")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.projectlombok:lombok")
