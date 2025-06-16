@@ -2,7 +2,6 @@ package com.archter.dto.interview.message
 
 import com.archter.domain.interview.InterviewRole
 
-data class InterviewMessageCreateDTO(
-    val role: InterviewRole,
-    val text: String
-)
+interface BaseMessageDTO {
+    var role: InterviewRole
+}
