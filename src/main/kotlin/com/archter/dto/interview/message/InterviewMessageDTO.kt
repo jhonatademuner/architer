@@ -8,8 +8,8 @@ import java.util.UUID
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class InterviewMessageDTO(
     var id: UUID? = null,
-    var role: InterviewRole,
+    override var role: InterviewRole,
     var content: String,
     var interviewId: UUID? = null,
     var createdAt: LocalDateTime? = null
-)
+) : BaseMessageDTO

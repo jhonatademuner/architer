@@ -1,10 +1,8 @@
 package com.archter.dto.assistant
 
-import com.archter.dto.interview.message.InterviewMessageDTO
-import lombok.Data
+import com.archter.dto.interview.message.BaseMessageDTO
 
-@Data
 data class AssistantRequestDTO(
     var model: String,
-    var messages: List<InterviewMessageDTO>,
+    var messages: List<BaseMessageDTO>,
 )

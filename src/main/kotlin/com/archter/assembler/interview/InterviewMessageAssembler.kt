@@ -2,7 +2,6 @@ package com.archter.assembler.interview
 
 import com.archter.assembler.AbstractAssembler
 import com.archter.domain.interview.message.InterviewMessage
-import com.archter.dto.interview.message.InterviewMessageCreateDTO
 import com.archter.dto.interview.message.InterviewMessageDTO
 import com.archter.repository.interview.InterviewRepository
 import com.archter.utils.exception.ResourceNotFoundException
@@ -35,13 +34,6 @@ class InterviewMessageAssembler(
             content = dto.content,
             interview = interview,
             createdAt = dto.createdAt,
-        )
-    }
-
-    fun toEntity(dto: InterviewMessageCreateDTO): InterviewMessage {
-        return InterviewMessage(
-            role = dto.role,
-            content = dto.content,
         )
     }
 

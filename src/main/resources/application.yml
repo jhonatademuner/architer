@@ -17,6 +17,13 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
-openai:
-  api-url: https://api.openai.com
-  api-key: <OPENAI_API_KEY>
+clients:
+  openai:
+    api-url: https://api.openai.com
+    api-key: <OPENAI_API_KEY>
+
+  minio:
+    base-url: <MINIO_BASE_URL>
+    access-key: <MINIO_ACCESS_KEY>
+    secret-key: <MINIO_SECRET_KEY>
+    bucket: <MINIO_BUCKET>

@@ -32,6 +32,7 @@ dependencies {
 	implementation("org.postgresql:postgresql:42.7.3")
 	implementation("org.flywaydb:flyway-core:10.21.0")
 	implementation("org.flywaydb:flyway-database-postgresql:10.21.0")
+	implementation("com.amazonaws:aws-java-sdk-s3:1.12.705")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
