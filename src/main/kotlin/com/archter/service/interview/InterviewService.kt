@@ -8,16 +8,20 @@ import com.archter.dto.assistant.AssistantResponseDTO
 import com.archter.dto.interview.InterviewCreateDTO
 import com.archter.dto.interview.InterviewDTO
 import com.archter.dto.interview.InterviewUpdateDTO
+import com.archter.dto.interview.message.BaseMessageDTO
+import com.archter.dto.interview.message.InterviewCompoundMessageDTO
 import com.archter.dto.interview.message.InterviewMessageCreateDTO
 import com.archter.dto.interview.message.InterviewMessageDTO
 import com.archter.repository.assistant.behavior.AssistantBehaviorRepository
 import com.archter.repository.challenge.ChallengeRepository
 import com.archter.repository.interview.InterviewRepository
+import com.archter.service.minio.MinioService
 import com.archter.utils.exception.AssistantChatException
 import com.archter.utils.exception.ResourceNotFoundException
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.util.UUID
 
 private val logger = KotlinLogging.logger {}
@@ -28,7 +32,8 @@ class InterviewService(
     private val interviewAssembler: InterviewAssembler,
     private val assistantClient: AssistantClient,
     private val assistantBehaviorRepository: AssistantBehaviorRepository,
-    private val challengeRepository: ChallengeRepository
+    private val challengeRepository: ChallengeRepository,
+    private val minioService: MinioService
 ) {
 
     fun create(challengeId: UUID, assistantBehaviorId: UUID) : InterviewDTO {
@@ -52,7 +57,7 @@ class InterviewService(
 
         val messages = mutableListOf(assistantBehaviorMessage, challengeMessage)
 
-        val assistantResponse = requestChatCompletion(messages).getMessage()
+        val assistantResponse = requestChatCompletion(messages)
         messages.add(assistantResponse)
 
         val interviewDto = InterviewCreateDTO(
@@ -67,25 +72,40 @@ class InterviewService(
         return interviewAssembler.toDto(interviewRepository.save(interview))
     }
 
-    fun sendMessage(interviewId: UUID, message: InterviewMessageCreateDTO): InterviewMessageDTO {
+    fun sendMessage(interviewId: UUID, message: InterviewMessageCreateDTO, image: MultipartFile?): InterviewMessageDTO {
         logger.info { "Sending message to chat - interviewId: $interviewId" }
-        val interviewDto = this.findById(interviewId)
-        val interviewMessage = InterviewMessageDTO(
-            role = InterviewRole.user,
-            content = message.content
-        )
-        interviewDto.messages.add(interviewMessage)
 
-        val response = requestChatCompletion(interviewDto.messages).getMessage()
-        interviewDto.messages.add(response)
+        val imageUrl = if (image != null && !image.isEmpty) {
+            minioService.uploadInterviewSystemDesign(interviewId, image)
+        } else null
+
+        val compoundMessage = InterviewCompoundMessageDTO(
+            role = message.role,
+            text = message.text,
+            imageUrl = imageUrl
+        )
+
+        val interviewDto = this.findById(interviewId)
+
+        val messageList = mutableListOf<BaseMessageDTO>()
+        messageList.addAll(interviewDto.messages)
+        messageList.add(compoundMessage)
+
+        val assistantResponse = requestChatCompletion(messageList)
+
+        interviewDto.messages.add(InterviewMessageDTO(
+            role = message.role,
+            content = message.text,
+        ))
+        interviewDto.messages.add(assistantResponse)
 
         val interview = interviewAssembler.toEntity(interviewDto)
         interviewRepository.save(interview)
 
-        return response
+        return assistantResponse
     }
 
-    private fun requestChatCompletion(messages: List<InterviewMessageDTO>) : AssistantResponseDTO {
+    private fun requestChatCompletion(messages: List<BaseMessageDTO>) : InterviewMessageDTO {
         val requestBody = AssistantRequestDTO(
             model = "o4-mini",
             messages = messages
@@ -97,7 +117,8 @@ class InterviewService(
             responseType = AssistantResponseDTO::class.java
         )
 
-        return response.body ?: throw AssistantChatException("Failed to get assistant message")
+        val rawResponse = response.body ?: throw AssistantChatException("Failed to get assistant message")
+        return rawResponse.getMessage()
     }
 
     fun findAll(page: Int, size: Int): List<InterviewDTO> {
