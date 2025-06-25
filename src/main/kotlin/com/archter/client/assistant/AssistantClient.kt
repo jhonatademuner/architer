@@ -1,29 +1,27 @@
 package com.archter.client.assistant
 
-import org.springframework.beans.factory.annotation.Value
+import com.archter.config.property.OpenaiProperties
 import org.springframework.http.*
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
-import java.util.*
 
 @Component
 class AssistantClient(
     private val restTemplate: RestTemplate,
-    @Value("\${openai.api-url}") private val apiUrl: String,
-    @Value("\${openai.api-key}") private val apiKey: String,
+    private val openaiProperties: OpenaiProperties,
 ) {
 
     private fun createHeaders(): HttpHeaders {
         return HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
-            set("Authorization", "Bearer $apiKey")
+            set("Authorization", "Bearer ${openaiProperties.apiKey}")
         }
     }
 
     private fun buildUri(endpoint: String, params: Map<String, String>): URI {
-        val baseUri = URI.create("$apiUrl/$endpoint")
+        val baseUri = URI.create("${openaiProperties.apiUrl}/$endpoint")
         val uriBuilder = UriComponentsBuilder.fromUri(baseUri)
         params.forEach { (key, value) ->
             uriBuilder.queryParam(key, value)
