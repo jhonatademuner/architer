@@ -6,7 +6,7 @@ plugins {
 	kotlin("plugin.jpa") version "1.9.25"
 }
 
-group = "com.archter"
+group = "com.architer"
 version = "0.0.1"
 
 java {
