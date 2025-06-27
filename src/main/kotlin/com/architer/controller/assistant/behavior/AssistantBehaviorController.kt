@@ -15,27 +15,27 @@ class AssistantBehaviorController(
     private val assistantBehaviorService: AssistantBehaviorService
 ) {
 
-    @PostMapping("/v1/assistant/behavior")
+    @PostMapping("/v1/assistants/behaviors")
     fun create(@RequestBody assistantBehavior: AssistantBehaviorCreateDTO): ResponseEntity<AssistantBehaviorDTO> {
         return ResponseEntity.status(HttpStatus.CREATED).body(assistantBehaviorService.create(assistantBehavior))
     }
 
-    @GetMapping("/v1/assistant/behavior")
+    @GetMapping("/v1/assistants/behaviors")
     fun findAll(@RequestParam page: Int = 0, @RequestParam size: Int = 10): ResponseEntity<List<AssistantBehaviorDTO>> {
         return ResponseEntity.status(HttpStatus.OK).body(assistantBehaviorService.findAll(page, size))
     }
 
-    @GetMapping("/v1/assistant/behavior/{id}")
+    @GetMapping("/v1/assistants/behaviors/{id}")
     fun findById(@PathVariable id: UUID): ResponseEntity<AssistantBehaviorDTO> {
         return ResponseEntity.status(HttpStatus.OK).body(assistantBehaviorService.findById(id))
     }
 
-    @PutMapping("/v1/assistant/behavior")
+    @PutMapping("/v1/assistants/behaviors")
     fun update(@RequestBody assistantBehavior: AssistantBehaviorUpdateDTO): ResponseEntity<AssistantBehaviorDTO> {
         return ResponseEntity.status(HttpStatus.OK).body(assistantBehaviorService.update(assistantBehavior))
     }
 
-    @DeleteMapping("/v1/assistant/behavior/{id}")
+    @DeleteMapping("/v1/assistants/behaviors/{id}")
     fun delete(@PathVariable id: UUID): ResponseEntity<Void> {
         assistantBehaviorService.delete(id)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()

@@ -26,12 +26,12 @@ class InterviewController(
     private val interviewService: InterviewService
 ) {
 
-    @PostMapping("/v1/interview")
+    @PostMapping("/v1/interviews")
     fun create(@RequestParam challenge: UUID, @RequestParam behavior: UUID): ResponseEntity<InterviewDTO> {
         return ResponseEntity.status(HttpStatus.CREATED).body(interviewService.create(challenge, behavior))
     }
 
-    @PostMapping("/v1/interview/{interviewId}/message", consumes = ["multipart/form-data"])
+    @PostMapping("/v1/interviews/{interviewId}/messages", consumes = ["multipart/form-data"])
     fun sendMessageWithImage(
         @PathVariable interviewId: UUID,
         @RequestPart("message") message: InterviewMessageCreateDTO,
@@ -42,22 +42,22 @@ class InterviewController(
     }
 
 
-    @GetMapping("/v1/interview")
+    @GetMapping("/v1/interviews")
     fun findAll(@RequestParam page: Int = 0, @RequestParam size: Int = 10): ResponseEntity<List<InterviewDTO>> {
         return ResponseEntity.status(HttpStatus.OK).body(interviewService.findAll(page, size))
     }
 
-    @GetMapping("/v1/interview/{interviewId}")
+    @GetMapping("/v1/interviews/{interviewId}")
     fun findById(@PathVariable interviewId: UUID): ResponseEntity<InterviewDTO> {
         return ResponseEntity.status(HttpStatus.OK).body(interviewService.findById(interviewId))
     }
 
-    @PutMapping("/v1/interview")
+    @PutMapping("/v1/interviews")
     fun update(@RequestBody interviewUpdateDTO: InterviewUpdateDTO): ResponseEntity<InterviewDTO> {
         return ResponseEntity.status(HttpStatus.OK).body(interviewService.update(interviewUpdateDTO))
     }
 
-    @DeleteMapping("/v1/interview/{id}")
+    @DeleteMapping("/v1/interviews/{id}")
     fun delete(@PathVariable id: UUID): ResponseEntity<Void> {
         interviewService.delete(id)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
