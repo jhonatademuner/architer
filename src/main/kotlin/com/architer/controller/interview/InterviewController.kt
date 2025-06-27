@@ -57,7 +57,7 @@ class InterviewController(
         return ResponseEntity.status(HttpStatus.OK).body(interviewService.update(interviewUpdateDTO))
     }
 
-    @DeleteMapping("/v1/interview/{id}")
+    @DeleteMapping("/v1/interviews/{id}")
     fun delete(@PathVariable id: UUID): ResponseEntity<Void> {
         interviewService.delete(id)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
