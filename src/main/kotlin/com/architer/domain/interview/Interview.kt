@@ -1,6 +1,6 @@
 package com.architer.domain.interview
 
-import com.architer.domain.assistant.behavior.AssistantBehavior
+import com.architer.domain.behavior.Behavior
 import com.architer.domain.challenge.Challenge
 import com.architer.domain.interview.message.InterviewMessage
 import jakarta.persistence.CascadeType
@@ -45,8 +45,8 @@ data class Interview (
     var messages: MutableList<InterviewMessage> = mutableListOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assistant_behavior", nullable = false, updatable = false)
-    var assistantBehavior: AssistantBehavior? = null,
+    @JoinColumn(name = "behavior", nullable = false, updatable = false)
+    var behavior: Behavior? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge", nullable = false, updatable = false)

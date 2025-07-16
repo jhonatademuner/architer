@@ -1,23 +1,23 @@
 package com.architer.assembler.interview
 
 import com.architer.assembler.AbstractAssembler
-import com.architer.assembler.assistant.AssistantBehaviorAssembler
+import com.architer.assembler.behavior.BehaviorAssembler
 import com.architer.assembler.challenge.ChallengeAssembler
 import com.architer.domain.interview.Interview
 import com.architer.dto.interview.InterviewDTO
 import com.architer.dto.interview.InterviewUpdateDTO
-import com.architer.repository.assistant.behavior.AssistantBehaviorRepository
+import com.architer.repository.behavior.BehaviorRepository
 import com.architer.repository.challenge.ChallengeRepository
 import com.architer.utils.exception.ResourceNotFoundException
 import org.springframework.stereotype.Component
 
 @Component
 class InterviewAssembler(
-    private val assistantBehaviorRepository: AssistantBehaviorRepository,
+    private val behaviorRepository: BehaviorRepository,
     private val challengeRepository: ChallengeRepository,
     private val messageAssembler: InterviewMessageAssembler,
     private val challengeAssembler: ChallengeAssembler,
-    private val assistantBehaviorAssembler: AssistantBehaviorAssembler,
+    private val behaviorAssembler: BehaviorAssembler,
 ) : AbstractAssembler<Interview, InterviewDTO>() {
 
     override fun toDto(entity: Interview): InterviewDTO {
@@ -27,7 +27,7 @@ class InterviewAssembler(
             timeSpent = entity.timeSpent,
             feedback = entity.feedback,
             messages = messageAssembler.toDtoList(entity.messages),
-            assistantBehavior = entity.assistantBehavior?.let { assistantBehaviorAssembler.toDto(it) },
+            assistantBehavior = entity.behavior?.let { behaviorAssembler.toDto(it) },
             challenge = entity.challenge?.let { challengeAssembler.toDto(it) },
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt
@@ -36,7 +36,7 @@ class InterviewAssembler(
 
     override fun toEntity(dto: InterviewDTO): Interview {
         val assistantBehavior = dto.assistantBehavior?.id?.let {
-            assistantBehaviorRepository.findById(it)
+            behaviorRepository.findById(it)
                 .orElseThrow { ResourceNotFoundException("AssistantBehavior with id $it not found") }
         }
 
@@ -50,7 +50,7 @@ class InterviewAssembler(
             title = dto.title,
             timeSpent = dto.timeSpent,
             feedback = dto.feedback,
-            assistantBehavior = assistantBehavior,
+            behavior = assistantBehavior,
             challenge = challenge,
         )
 

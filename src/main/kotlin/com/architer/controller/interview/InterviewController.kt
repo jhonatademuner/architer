@@ -32,7 +32,7 @@ class InterviewController(
         return ResponseEntity.status(HttpStatus.CREATED).body(interviewService.create(body))
     }
 
-    @PostMapping("/v1/interviews/{interviewId}/messages", consumes = ["multipart/form-data"])
+    @PostMapping("/v1/interviews/{interviewId}/message", consumes = ["multipart/form-data"])
     fun sendMessageWithImage(
         @PathVariable interviewId: UUID,
         @RequestPart("message") message: InterviewMessageCreateDTO,

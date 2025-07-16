@@ -1,8 +1,8 @@
-package com.architer.dto.assistant.behavior
+package com.architer.dto.behavior
 
 import java.util.UUID
 
-data class AssistantBehaviorUpdateDTO(
+data class BehaviorUpdateDTO(
     val id: UUID,
     val title: String,
     val overview: String,
