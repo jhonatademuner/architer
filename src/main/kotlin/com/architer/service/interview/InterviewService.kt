@@ -1,5 +1,7 @@
 package com.architer.service.interview
 
+import com.architer.assembler.assistant.AssistantBehaviorAssembler
+import com.architer.assembler.challenge.ChallengeAssembler
 import com.architer.assembler.interview.InterviewAssembler
 import com.architer.client.assistant.AssistantClient
 import com.architer.domain.interview.InterviewRole
@@ -28,15 +30,20 @@ private val logger = KotlinLogging.logger {}
 
 @Service
 class InterviewService(
-    private val interviewRepository: InterviewRepository,
-    private val interviewAssembler: InterviewAssembler,
     private val assistantClient: AssistantClient,
+    private val minioService: MinioService,
+    private val interviewRepository: InterviewRepository,
     private val assistantBehaviorRepository: AssistantBehaviorRepository,
     private val challengeRepository: ChallengeRepository,
-    private val minioService: MinioService
+    private val interviewAssembler: InterviewAssembler,
+    private val challengeAssembler: ChallengeAssembler,
+    private val assistantBehaviorAssembler: AssistantBehaviorAssembler,
 ) {
 
-    fun create(challengeId: UUID, assistantBehaviorId: UUID) : InterviewDTO {
+    fun create(body: InterviewCreateDTO): InterviewDTO {
+        val challengeId = body.challengeId
+        val assistantBehaviorId = body.assistantBehaviorId
+
         logger.info { "Creating chat - challengeId: $challengeId, assistantBehaviorId: $assistantBehaviorId" }
 
         val assistantBehavior = assistantBehaviorRepository.findById(assistantBehaviorId)
@@ -50,21 +57,26 @@ class InterviewService(
             content = assistantBehavior.toString()
         )
 
+        val seniorityLevelMessage = InterviewMessageDTO(
+            role = InterviewRole.system,
+            content = "Consider that the candidate is at the ${body.seniorityLevel} level."
+        )
+
         val challengeMessage = InterviewMessageDTO(
             role = InterviewRole.system,
             content = challenge.toString()
         )
 
-        val messages = mutableListOf(assistantBehaviorMessage, challengeMessage)
+        val messages = mutableListOf(assistantBehaviorMessage, seniorityLevelMessage, challengeMessage)
 
         val assistantResponse = requestChatCompletion(messages)
         messages.add(assistantResponse)
 
-        val interviewDto = InterviewCreateDTO(
+        val interviewDto = InterviewDTO(
             title = challenge.title,
             messages = messages,
-            assistantBehaviorId = assistantBehavior.id,
-            challengeId = challenge.id
+            assistantBehavior = assistantBehaviorAssembler.toDto(assistantBehavior),
+            challenge = challengeAssembler.toDto(challenge)
         )
 
         val interview = interviewAssembler.toEntity(interviewDto)
@@ -93,10 +105,12 @@ class InterviewService(
 
         val assistantResponse = requestChatCompletion(messageList)
 
-        interviewDto.messages.add(InterviewMessageDTO(
-            role = message.role,
-            content = message.text,
-        ))
+        interviewDto.messages.add(
+            InterviewMessageDTO(
+                role = message.role,
+                content = message.text,
+            )
+        )
         interviewDto.messages.add(assistantResponse)
 
         val interview = interviewAssembler.toEntity(interviewDto)
@@ -105,7 +119,7 @@ class InterviewService(
         return assistantResponse
     }
 
-    private fun requestChatCompletion(messages: List<BaseMessageDTO>) : InterviewMessageDTO {
+    private fun requestChatCompletion(messages: List<BaseMessageDTO>): InterviewMessageDTO {
         val requestBody = AssistantRequestDTO(
             model = "o4-mini",
             messages = messages

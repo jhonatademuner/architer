@@ -1,5 +1,6 @@
 package com.architer.controller.interview
 
+import com.architer.dto.interview.InterviewCreateDTO
 import com.architer.dto.interview.InterviewDTO
 import com.architer.dto.interview.InterviewUpdateDTO
 import com.architer.dto.interview.message.InterviewMessageCreateDTO
@@ -27,8 +28,8 @@ class InterviewController(
 ) {
 
     @PostMapping("/v1/interviews")
-    fun create(@RequestParam challenge: UUID, @RequestParam behavior: UUID): ResponseEntity<InterviewDTO> {
-        return ResponseEntity.status(HttpStatus.CREATED).body(interviewService.create(challenge, behavior))
+    fun create(@RequestBody body: InterviewCreateDTO): ResponseEntity<InterviewDTO> {
+        return ResponseEntity.status(HttpStatus.CREATED).body(interviewService.create(body))
     }
 
     @PostMapping("/v1/interviews/{interviewId}/messages", consumes = ["multipart/form-data"])
