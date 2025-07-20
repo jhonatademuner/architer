@@ -1,6 +1,6 @@
 package com.architer.service.interview
 
-import com.architer.assembler.assistant.AssistantBehaviorAssembler
+import com.architer.assembler.behavior.BehaviorAssembler
 import com.architer.assembler.challenge.ChallengeAssembler
 import com.architer.assembler.interview.InterviewAssembler
 import com.architer.client.assistant.AssistantClient
@@ -14,7 +14,7 @@ import com.architer.dto.interview.message.BaseMessageDTO
 import com.architer.dto.interview.message.InterviewCompoundMessageDTO
 import com.architer.dto.interview.message.InterviewMessageCreateDTO
 import com.architer.dto.interview.message.InterviewMessageDTO
-import com.architer.repository.assistant.behavior.AssistantBehaviorRepository
+import com.architer.repository.behavior.BehaviorRepository
 import com.architer.repository.challenge.ChallengeRepository
 import com.architer.repository.interview.InterviewRepository
 import com.architer.service.minio.MinioService
@@ -33,11 +33,11 @@ class InterviewService(
     private val assistantClient: AssistantClient,
     private val minioService: MinioService,
     private val interviewRepository: InterviewRepository,
-    private val assistantBehaviorRepository: AssistantBehaviorRepository,
+    private val behaviorRepository: BehaviorRepository,
     private val challengeRepository: ChallengeRepository,
     private val interviewAssembler: InterviewAssembler,
     private val challengeAssembler: ChallengeAssembler,
-    private val assistantBehaviorAssembler: AssistantBehaviorAssembler,
+    private val behaviorAssembler: BehaviorAssembler,
 ) {
 
     fun create(body: InterviewCreateDTO): InterviewDTO {
@@ -46,7 +46,7 @@ class InterviewService(
 
         logger.info { "Creating chat - challengeId: $challengeId, assistantBehaviorId: $assistantBehaviorId" }
 
-        val assistantBehavior = assistantBehaviorRepository.findById(assistantBehaviorId)
+        val assistantBehavior = behaviorRepository.findById(assistantBehaviorId)
             .orElseThrow { ResourceNotFoundException("AssistantBehavior with id $assistantBehaviorId not found") }
 
         val challenge = challengeRepository.findById(challengeId)
@@ -75,7 +75,7 @@ class InterviewService(
         val interviewDto = InterviewDTO(
             title = challenge.title,
             messages = messages,
-            assistantBehavior = assistantBehaviorAssembler.toDto(assistantBehavior),
+            assistantBehavior = behaviorAssembler.toDto(assistantBehavior),
             challenge = challengeAssembler.toDto(challenge)
         )
 

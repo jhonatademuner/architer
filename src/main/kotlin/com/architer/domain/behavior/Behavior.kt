@@ -1,4 +1,4 @@
-package com.architer.domain.assistant.behavior
+package com.architer.domain.behavior
 
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
@@ -10,7 +10,7 @@ import java.util.UUID
 @Entity
 @Table(name = "assistant_behaviors")
 @EntityListeners(AuditingEntityListener::class)
-data class AssistantBehavior(
+data class Behavior(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

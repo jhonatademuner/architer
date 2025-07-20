@@ -1,9 +1,9 @@
-package com.architer.dto.assistant.behavior
+package com.architer.dto.behavior
 
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class AssistantBehaviorDTO (
+data class BehaviorDTO (
 
     var id: UUID?,
     var title: String,

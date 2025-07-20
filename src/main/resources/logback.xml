@@ -4,7 +4,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>
-                [%d{yyyy-MM-dd HH:mm:ss}] [%5p] [%t] [service=%X{service}] [request_id=%X{requestId}] [trace_id=%X{traceId}] [logger=%logger] [method=%X{method}] [path=%X{path}] | %replace(%m){'\(\) -> .*',''}%n
+                [%d{yyyy-MM-dd HH:mm:ss}] [%5p] [%t] [service=%X{service}] [request_id=%X{requestId}] [trace_id=%X{traceId}] [logger=%logger] [method=%X{method}] [path=%X{path}] [duration=%X{duration}] | %replace(%m){'\(\) -> .*',''}%n
             </pattern>
         </encoder>
     </appender>

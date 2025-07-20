@@ -1,4 +1,4 @@
-CREATE TABLE assistant_behaviors (
+CREATE TABLE behaviors (
     id UUID PRIMARY KEY,
     title TEXT NOT NULL,
     overview TEXT NOT NULL,
