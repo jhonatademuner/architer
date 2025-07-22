@@ -1,0 +1,4 @@
+ALTER TABLE challenges
+	ADD COLUMN category TEXT NOT NULL,
+	ADD COLUMN difficulty TEXT NOT NULL,
+	ADD COLUMN icon TEXT
