@@ -30,13 +30,13 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder
 ) {
 
-    fun login(login: String, password: String): JwtTokenDTO {
-        var user: User? = userRepository.findByUsernameAndIsActiveTrue(login)
-        if (user == null) user = userRepository.findByEmailAndIsActiveTrue(login)
+    fun login(email: String, password: String): JwtTokenDTO {
+        var user: User? = userRepository.findByEmailAndIsActiveTrue(email)
+        if (user == null) user = userRepository.findByEmailAndIsActiveTrue(email)
             ?: throw BadCredentialsException("Invalid credentials")
 
         val authentication = authManager.authenticate(
-            UsernamePasswordAuthenticationToken(user.username, password)
+            UsernamePasswordAuthenticationToken(user.email, password)
         )
         if (!authentication.isAuthenticated) throw BadCredentialsException("Invalid credentials")
 
@@ -48,7 +48,7 @@ class AuthService(
 
     fun register(dto: UserRegisterDTO): UserDTO {
         validatePasswordStrength(dto.password)
-        if (userRepository.existsByUsernameOrEmail(dto.username, dto.email)) {
+        if (userRepository.existsByEmail(dto.email)) {
             throw IllegalArgumentException("User with username or email already exists")
         }
         val user = userAssembler.toEntity(dto).apply {

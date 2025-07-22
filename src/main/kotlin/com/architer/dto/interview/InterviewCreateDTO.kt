@@ -5,6 +5,6 @@ import java.util.UUID
 
 data class InterviewCreateDTO (
     val challengeId: UUID,
-    val assistantBehaviorId: UUID,
+    val behaviorId: UUID,
     val seniorityLevel: InterviewSeniorityLevel,
 )

@@ -18,8 +18,8 @@ data class User(
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: UUID? = null,
 
-    @Column(name = "username", nullable = false, unique = true)
-    var username: String,
+    @Column(name = "name", nullable = false, unique = true)
+    var name: String,
 
     @Column(name = "email", nullable = false, unique = true)
     var email: String,

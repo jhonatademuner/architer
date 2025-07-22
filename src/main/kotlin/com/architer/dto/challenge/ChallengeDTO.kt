@@ -1,6 +1,5 @@
 package com.architer.dto.challenge
 
-import java.time.LocalDateTime
 import java.util.UUID
 
 data class ChallengeDTO(
@@ -9,7 +8,8 @@ data class ChallengeDTO(
     var title: String,
     var overview: String,
     var content: String,
-    var updatedAt: LocalDateTime?,
-    var createdAt: LocalDateTime?
+    var category: String,
+    var difficulty: String,
+    var icon: String? = null
 
 )

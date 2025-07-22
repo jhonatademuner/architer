@@ -42,7 +42,7 @@ class InterviewService(
 
     fun create(body: InterviewCreateDTO): InterviewDTO {
         val challengeId = body.challengeId
-        val assistantBehaviorId = body.assistantBehaviorId
+        val assistantBehaviorId = body.behaviorId
 
         logger.info { "Creating chat - challengeId: $challengeId, assistantBehaviorId: $assistantBehaviorId" }
 

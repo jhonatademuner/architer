@@ -11,7 +11,7 @@ class UserAssembler {
     fun toDto(entity: User): UserDTO {
         return UserDTO(
             id = entity.id,
-            username = entity.username,
+            name = entity.name,
             email = entity.email,
             isAdmin = entity.isAdmin,
             isActive = entity.isActive
@@ -19,7 +19,7 @@ class UserAssembler {
     }
 
     fun updateEntityFromDto(dto: UserDTO, entity: User): User {
-        entity.username = dto.username
+        entity.name = dto.name
         entity.email = dto.email
         entity.isAdmin = dto.isAdmin ?: entity.isAdmin
         entity.isActive = dto.isActive ?: entity.isActive
@@ -28,7 +28,7 @@ class UserAssembler {
 
     fun toEntity(dto: UserRegisterDTO): User {
         return User(
-            username = dto.username,
+            name = dto.name,
             email = dto.email,
             password = dto.password,
         )

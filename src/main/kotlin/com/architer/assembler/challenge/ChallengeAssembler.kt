@@ -2,6 +2,8 @@ package com.architer.assembler.challenge
 
 import com.architer.assembler.AbstractAssembler
 import com.architer.domain.challenge.Challenge
+import com.architer.domain.challenge.ChallengeCategory
+import com.architer.domain.challenge.ChallengeDifficulty
 import com.architer.dto.challenge.ChallengeCreateDTO
 import com.architer.dto.challenge.ChallengeDTO
 import com.architer.dto.challenge.ChallengeUpdateDTO
@@ -16,8 +18,9 @@ class ChallengeAssembler : AbstractAssembler<Challenge, ChallengeDTO>() {
             title = entity.title,
             overview = entity.overview,
             content = entity.content,
-            updatedAt = entity.updatedAt!!,
-            createdAt = entity.createdAt!!
+            category = entity.category.displayName,
+            difficulty = entity.difficulty.displayName,
+            icon = entity.icon
         )
     }
 
@@ -26,7 +29,10 @@ class ChallengeAssembler : AbstractAssembler<Challenge, ChallengeDTO>() {
             id = dto.id,
             title = dto.title,
             overview = dto.overview,
-            content = dto.content
+            content = dto.content,
+            category = ChallengeCategory.valueOf(dto.category),
+            difficulty = ChallengeDifficulty.valueOf(dto.difficulty),
+            icon = dto.icon
         )
     }
 
@@ -34,6 +40,9 @@ class ChallengeAssembler : AbstractAssembler<Challenge, ChallengeDTO>() {
         entity.title = dto.title
         entity.overview = dto.overview
         entity.content = dto.content
+        entity.category = dto.category
+        entity.difficulty = dto.difficulty
+        entity.icon = dto.icon
         return entity
     }
 
@@ -41,7 +50,10 @@ class ChallengeAssembler : AbstractAssembler<Challenge, ChallengeDTO>() {
         return Challenge(
             title = dto.title,
             overview = dto.overview,
-            content = dto.content
+            content = dto.content,
+            category = dto.category,
+            difficulty = dto.difficulty,
+            icon = dto.icon
         )
     }
 

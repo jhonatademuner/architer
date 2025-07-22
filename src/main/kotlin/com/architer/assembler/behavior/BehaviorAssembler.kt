@@ -16,8 +16,7 @@ class BehaviorAssembler : AbstractAssembler<Behavior, BehaviorDTO>() {
             title = entity.title,
             overview = entity.overview,
             content = entity.content,
-            updatedAt = entity.updatedAt,
-            createdAt = entity.createdAt
+            icon = entity.icon
         )
     }
 
@@ -27,6 +26,7 @@ class BehaviorAssembler : AbstractAssembler<Behavior, BehaviorDTO>() {
             title = dto.title,
             overview = dto.overview,
             content = dto.content,
+            icon = dto.icon
         )
     }
 
@@ -34,6 +34,7 @@ class BehaviorAssembler : AbstractAssembler<Behavior, BehaviorDTO>() {
         entity.title = dto.title
         entity.overview = dto.overview
         entity.content = dto.content
+        entity.icon = dto.icon
         return entity
     }
 
@@ -41,7 +42,8 @@ class BehaviorAssembler : AbstractAssembler<Behavior, BehaviorDTO>() {
         return Behavior(
             title = dto.title,
             overview = dto.overview,
-            content = dto.content
+            content = dto.content,
+            icon = dto.icon
         )
     }
 
