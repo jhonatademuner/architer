@@ -9,7 +9,7 @@ import com.architer.dto.assistant.AssistantRequestDTO
 import com.architer.dto.assistant.AssistantResponseDTO
 import com.architer.dto.interview.InterviewCreateDTO
 import com.architer.dto.interview.InterviewDTO
-import com.architer.dto.interview.InterviewUpdateDTO
+import com.architer.dto.interview.SimplifiedInterviewDTO
 import com.architer.dto.interview.message.BaseMessageDTO
 import com.architer.dto.interview.message.InterviewCompoundMessageDTO
 import com.architer.dto.interview.message.InterviewMessageCreateDTO
@@ -42,24 +42,19 @@ class InterviewService(
 
     fun create(body: InterviewCreateDTO): InterviewDTO {
         val challengeId = body.challengeId
-        val assistantBehaviorId = body.behaviorId
+        val behaviorId = body.behaviorId
 
-        logger.info { "Creating chat - challengeId: $challengeId, assistantBehaviorId: $assistantBehaviorId" }
+        logger.info { "Creating chat - challengeId: $challengeId, assistantBehaviorId: $behaviorId" }
 
-        val assistantBehavior = behaviorRepository.findById(assistantBehaviorId)
-            .orElseThrow { ResourceNotFoundException("AssistantBehavior with id $assistantBehaviorId not found") }
+        val behavior = behaviorRepository.findById(behaviorId)
+            .orElseThrow { ResourceNotFoundException("AssistantBehavior with id $behaviorId not found") }
 
         val challenge = challengeRepository.findById(challengeId)
             .orElseThrow { ResourceNotFoundException("Challenge with id $challengeId not found") }
 
-        val assistantBehaviorMessage = InterviewMessageDTO(
+        val behaviorMessage = InterviewMessageDTO(
             role = InterviewRole.system,
-            content = assistantBehavior.toString()
-        )
-
-        val seniorityLevelMessage = InterviewMessageDTO(
-            role = InterviewRole.system,
-            content = "Consider that the candidate is at the ${body.seniorityLevel} level."
+            content = behavior.toString()
         )
 
         val challengeMessage = InterviewMessageDTO(
@@ -67,7 +62,12 @@ class InterviewService(
             content = challenge.toString()
         )
 
-        val messages = mutableListOf(assistantBehaviorMessage, seniorityLevelMessage, challengeMessage)
+        val seniorityLevelMessage = InterviewMessageDTO(
+            role = InterviewRole.system,
+            content = "Consider that the candidate is at the ${body.seniorityLevel} level."
+        )
+
+        val messages = mutableListOf(behaviorMessage, seniorityLevelMessage, challengeMessage)
 
         val assistantResponse = requestChatCompletion(messages)
         messages.add(assistantResponse)
@@ -75,7 +75,7 @@ class InterviewService(
         val interviewDto = InterviewDTO(
             title = challenge.title,
             messages = messages,
-            assistantBehavior = behaviorAssembler.toDto(assistantBehavior),
+            behavior = behaviorAssembler.toDto(behavior),
             challenge = challengeAssembler.toDto(challenge)
         )
 
@@ -135,10 +135,10 @@ class InterviewService(
         return rawResponse.getMessage()
     }
 
-    fun findAll(page: Int, size: Int): List<InterviewDTO> {
+    fun findAll(page: Int, size: Int): List<SimplifiedInterviewDTO> {
         logger.info { "Finding all interviews - page: $page, size: $size" }
         val entityList = interviewRepository.findAll(PageRequest.of(page, size)).content
-        return interviewAssembler.toDtoList(entityList)
+        return interviewAssembler.toSimplifiedDtoList(entityList)
     }
 
     fun findById(id: UUID): InterviewDTO {
@@ -146,15 +146,6 @@ class InterviewService(
         val entity = interviewRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Interview with id $id not found") }
         return interviewAssembler.toDto(entity)
-    }
-
-    fun update(interviewUpdateDTO: InterviewUpdateDTO): InterviewDTO {
-        logger.info { "Updating interview - id: ${interviewUpdateDTO.id}" }
-        val existingInterview = interviewRepository.findById(interviewUpdateDTO.id)
-            .orElseThrow { ResourceNotFoundException("Interview with id ${interviewUpdateDTO.id} not found") }
-
-        val updatedInterview = interviewAssembler.updateEntityFromDto(interviewUpdateDTO, existingInterview)
-        return interviewAssembler.toDto(interviewRepository.save(updatedInterview))
     }
 
     fun delete(id: UUID): Unit {

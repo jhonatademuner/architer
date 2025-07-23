@@ -7,6 +7,7 @@ import com.architer.domain.challenge.ChallengeDifficulty
 import com.architer.dto.challenge.ChallengeCreateDTO
 import com.architer.dto.challenge.ChallengeDTO
 import com.architer.dto.challenge.ChallengeUpdateDTO
+import com.architer.dto.challenge.SimplifiedChallengeDTO
 import org.springframework.stereotype.Component
 
 @Component
@@ -55,6 +56,21 @@ class ChallengeAssembler : AbstractAssembler<Challenge, ChallengeDTO>() {
             difficulty = dto.difficulty,
             icon = dto.icon
         )
+    }
+
+    fun toSimplifiedDto(entity: Challenge): SimplifiedChallengeDTO {
+        return SimplifiedChallengeDTO(
+            id = entity.id,
+            title = entity.title,
+            overview = entity.overview,
+            category = entity.category.displayName,
+            difficulty = entity.difficulty.displayName,
+            icon = entity.icon
+        )
+    }
+
+    fun toSimplifiedDtoList(entities: List<Challenge>): List<SimplifiedChallengeDTO> {
+        return entities.map { toSimplifiedDto(it) }
     }
 
 }

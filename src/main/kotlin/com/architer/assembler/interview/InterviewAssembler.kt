@@ -4,8 +4,10 @@ import com.architer.assembler.AbstractAssembler
 import com.architer.assembler.behavior.BehaviorAssembler
 import com.architer.assembler.challenge.ChallengeAssembler
 import com.architer.domain.interview.Interview
+import com.architer.domain.interview.InterviewSeniorityLevel
 import com.architer.dto.interview.InterviewDTO
 import com.architer.dto.interview.InterviewUpdateDTO
+import com.architer.dto.interview.SimplifiedInterviewDTO
 import com.architer.repository.behavior.BehaviorRepository
 import com.architer.repository.challenge.ChallengeRepository
 import com.architer.utils.exception.ResourceNotFoundException
@@ -27,31 +29,33 @@ class InterviewAssembler(
             timeSpent = entity.timeSpent,
             feedback = entity.feedback,
             messages = messageAssembler.toDtoList(entity.messages),
-            assistantBehavior = entity.behavior?.let { behaviorAssembler.toDto(it) },
-            challenge = entity.challenge?.let { challengeAssembler.toDto(it) },
+            behavior = entity.behavior.let { behaviorAssembler.toDto(it) },
+            challenge = entity.challenge.let { challengeAssembler.toDto(it) },
+            seniority = entity.seniority.displayName,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt
         )
     }
 
     override fun toEntity(dto: InterviewDTO): Interview {
-        val assistantBehavior = dto.assistantBehavior?.id?.let {
+        val behavior = dto.behavior?.id?.let {
             behaviorRepository.findById(it)
                 .orElseThrow { ResourceNotFoundException("AssistantBehavior with id $it not found") }
-        }
+        } ?: throw IllegalArgumentException("assistantBehavior is required")
 
         val challenge = dto.challenge?.id?.let {
             challengeRepository.findById(it)
                 .orElseThrow { ResourceNotFoundException("Challenge with id $it not found") }
-        }
+        } ?: throw IllegalArgumentException("challenge is required")
 
         val interview = Interview(
             id = dto.id,
             title = dto.title,
             timeSpent = dto.timeSpent,
             feedback = dto.feedback,
-            behavior = assistantBehavior,
+            behavior = behavior,
             challenge = challenge,
+            seniority = InterviewSeniorityLevel.fromDisplayName(dto.seniority)
         )
 
         messageAssembler.toEntityList(dto.messages)
@@ -60,11 +64,21 @@ class InterviewAssembler(
         return interview
     }
 
-    fun updateEntityFromDto(dto: InterviewUpdateDTO, entity: Interview): Interview {
-        entity.title = dto.title
-        entity.timeSpent = dto.timeSpent
-        entity.feedback = dto.feedback
-        return entity
+    fun toSimplifiedDto(entity: Interview): SimplifiedInterviewDTO {
+        return SimplifiedInterviewDTO(
+            id = entity.id,
+            title = entity.title,
+            timeSpent = entity.timeSpent,
+            score = 99999, // Placeholder for score, as it's not in the entity yet
+            behaviorTitle = entity.behavior.title,
+            challengeTitle = entity.challenge.title,
+            seniority = entity.seniority.displayName,
+            createdAt = entity.createdAt
+        )
+    }
+
+    fun toSimplifiedDtoList(entities: List<Interview>): List<SimplifiedInterviewDTO> {
+        return entities.map { toSimplifiedDto(it) }
     }
 
 }

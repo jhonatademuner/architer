@@ -2,7 +2,7 @@ package com.architer.controller.interview
 
 import com.architer.dto.interview.InterviewCreateDTO
 import com.architer.dto.interview.InterviewDTO
-import com.architer.dto.interview.InterviewUpdateDTO
+import com.architer.dto.interview.SimplifiedInterviewDTO
 import com.architer.dto.interview.message.InterviewMessageCreateDTO
 import com.architer.dto.interview.message.InterviewMessageDTO
 import com.architer.service.interview.InterviewService
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -42,20 +41,14 @@ class InterviewController(
         return ResponseEntity.ok(response)
     }
 
-
     @GetMapping("/v1/interviews")
-    fun findAll(@RequestParam page: Int = 0, @RequestParam size: Int = 10): ResponseEntity<List<InterviewDTO>> {
+    fun findAll(@RequestParam page: Int = 0, @RequestParam size: Int = 10): ResponseEntity<List<SimplifiedInterviewDTO>> {
         return ResponseEntity.status(HttpStatus.OK).body(interviewService.findAll(page, size))
     }
 
-    @GetMapping("/v1/interviews/{interviewId}")
-    fun findById(@PathVariable interviewId: UUID): ResponseEntity<InterviewDTO> {
-        return ResponseEntity.status(HttpStatus.OK).body(interviewService.findById(interviewId))
-    }
-
-    @PutMapping("/v1/interviews")
-    fun update(@RequestBody interviewUpdateDTO: InterviewUpdateDTO): ResponseEntity<InterviewDTO> {
-        return ResponseEntity.status(HttpStatus.OK).body(interviewService.update(interviewUpdateDTO))
+    @GetMapping("/v1/interviews/{id}")
+    fun findById(@PathVariable id: UUID): ResponseEntity<InterviewDTO> {
+        return ResponseEntity.status(HttpStatus.OK).body(interviewService.findById(id))
     }
 
     @DeleteMapping("/v1/interviews/{id}")

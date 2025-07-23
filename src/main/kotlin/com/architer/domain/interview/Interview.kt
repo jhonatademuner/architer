@@ -7,6 +7,8 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -46,11 +48,15 @@ data class Interview (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "behavior", nullable = false, updatable = false)
-    var behavior: Behavior? = null,
+    var behavior: Behavior,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge", nullable = false, updatable = false)
-    var challenge: Challenge? = null,
+    var challenge: Challenge,
+
+    @Column(name = "seniority", nullable = false)
+    @Enumerated(EnumType.STRING)
+    var seniority: InterviewSeniorityLevel = InterviewSeniorityLevel.JUNIOR,
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)

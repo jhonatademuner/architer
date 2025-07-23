@@ -4,6 +4,7 @@ import com.architer.assembler.behavior.BehaviorAssembler
 import com.architer.dto.behavior.BehaviorCreateDTO
 import com.architer.dto.behavior.BehaviorDTO
 import com.architer.dto.behavior.BehaviorUpdateDTO
+import com.architer.dto.behavior.SimplifiedBehaviorDTO
 import com.architer.repository.behavior.BehaviorRepository
 import com.architer.utils.exception.ResourceNotFoundException
 import org.springframework.data.domain.PageRequest
@@ -21,9 +22,9 @@ class BehaviorService(
         return behaviorAssembler.toDto(behaviorRepository.save(entity))
     }
 
-    fun findAll(page: Int, size: Int): List<BehaviorDTO> {
+    fun findAll(page: Int, size: Int): List<SimplifiedBehaviorDTO> {
         val entityList = behaviorRepository.findAll(PageRequest.of(page, size)).content
-        return behaviorAssembler.toDtoList(entityList)
+        return behaviorAssembler.toSimplifiedDtoList(entityList)
     }
 
     fun findById(id: UUID): BehaviorDTO {

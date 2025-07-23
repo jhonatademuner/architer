@@ -5,6 +5,7 @@ import com.architer.domain.behavior.Behavior
 import com.architer.dto.behavior.BehaviorCreateDTO
 import com.architer.dto.behavior.BehaviorDTO
 import com.architer.dto.behavior.BehaviorUpdateDTO
+import com.architer.dto.behavior.SimplifiedBehaviorDTO
 import org.springframework.stereotype.Component
 
 @Component
@@ -45,6 +46,19 @@ class BehaviorAssembler : AbstractAssembler<Behavior, BehaviorDTO>() {
             content = dto.content,
             icon = dto.icon
         )
+    }
+
+    fun toSimplifiedDto(entity: Behavior): SimplifiedBehaviorDTO {
+        return SimplifiedBehaviorDTO(
+            id = entity.id,
+            title = entity.title,
+            overview = entity.overview,
+            icon = entity.icon
+        )
+    }
+
+    fun toSimplifiedDtoList(entities: List<Behavior>): List<SimplifiedBehaviorDTO> {
+        return entities.map { toSimplifiedDto(it) }
     }
 
 }
