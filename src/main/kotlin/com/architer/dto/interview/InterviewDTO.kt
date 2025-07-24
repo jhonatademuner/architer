@@ -12,6 +12,7 @@ data class InterviewDTO(
     var title: String,
     var timeSpent: Int? = null, // in seconds
     var feedback: String? = null,
+    var score: Int? = null, // 0-100
     var messages: MutableList<InterviewMessageDTO> = mutableListOf(),
     var behavior: BehaviorDTO?,
     var seniority: String = InterviewSeniorityLevel.JUNIOR.displayName,

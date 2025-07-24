@@ -1,0 +1,3 @@
+ALTER TABLE interviews
+	ADD COLUMN seniority TEXT NOT NULL,
+	ADD COLUMN score INT

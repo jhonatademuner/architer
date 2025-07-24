@@ -36,7 +36,7 @@ data class Interview (
     @Column(name = "title", nullable = false)
     var title: String,
 
-    @Column(name = "timeSpent", nullable = true)
+    @Column(name = "time_spent", nullable = true)
     var timeSpent: Int? = null, // in seconds
 
     @Column(name = "feedback", nullable = true)
@@ -57,6 +57,9 @@ data class Interview (
     @Column(name = "seniority", nullable = false)
     @Enumerated(EnumType.STRING)
     var seniority: InterviewSeniorityLevel = InterviewSeniorityLevel.JUNIOR,
+
+    @Column(name = "score", nullable = true)
+    var score: Int? = null, // MAX 100
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)

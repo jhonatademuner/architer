@@ -4,7 +4,7 @@ import com.architer.domain.interview.InterviewSeniorityLevel
 import java.util.UUID
 
 data class InterviewCreateDTO (
-    val challengeId: UUID,
-    val behaviorId: UUID,
-    val seniorityLevel: InterviewSeniorityLevel,
+    val challenge: UUID,
+    val behavior: UUID,
+    val seniority: InterviewSeniorityLevel,
 )

@@ -27,7 +27,7 @@ class InterviewController(
 ) {
 
     @PostMapping("/v1/interviews")
-    fun create(@RequestBody body: InterviewCreateDTO): ResponseEntity<InterviewDTO> {
+    fun create(@RequestBody body: InterviewCreateDTO): ResponseEntity<SimplifiedInterviewDTO> {
         return ResponseEntity.status(HttpStatus.CREATED).body(interviewService.create(body))
     }
 

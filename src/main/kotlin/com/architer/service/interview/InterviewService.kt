@@ -40,9 +40,9 @@ class InterviewService(
     private val behaviorAssembler: BehaviorAssembler,
 ) {
 
-    fun create(body: InterviewCreateDTO): InterviewDTO {
-        val challengeId = body.challengeId
-        val behaviorId = body.behaviorId
+    fun create(body: InterviewCreateDTO): SimplifiedInterviewDTO {
+        val challengeId = body.challenge
+        val behaviorId = body.behavior
 
         logger.info { "Creating chat - challengeId: $challengeId, assistantBehaviorId: $behaviorId" }
 
@@ -64,7 +64,7 @@ class InterviewService(
 
         val seniorityLevelMessage = InterviewMessageDTO(
             role = InterviewRole.system,
-            content = "Consider that the candidate is at the ${body.seniorityLevel} level."
+            content = "Consider that the candidate is at the ${body.seniority} level."
         )
 
         val messages = mutableListOf(behaviorMessage, seniorityLevelMessage, challengeMessage)
@@ -81,11 +81,14 @@ class InterviewService(
 
         val interview = interviewAssembler.toEntity(interviewDto)
 
-        return interviewAssembler.toDto(interviewRepository.save(interview))
+        return interviewAssembler.toSimplifiedDto(interviewRepository.save(interview))
     }
 
     fun sendMessage(interviewId: UUID, message: InterviewMessageCreateDTO, image: MultipartFile?): InterviewMessageDTO {
         logger.info { "Sending message to chat - interviewId: $interviewId" }
+
+        logger.info { "Message content: $message" }
+        logger.info { "Image: ${image?.originalFilename ?: "No image provided"}" }
 
         val imageUrl = if (image != null && !image.isEmpty) {
             minioService.uploadInterviewSystemDesign(interviewId, image)

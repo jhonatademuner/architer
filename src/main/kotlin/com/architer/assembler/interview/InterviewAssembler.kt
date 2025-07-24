@@ -32,6 +32,7 @@ class InterviewAssembler(
             behavior = entity.behavior.let { behaviorAssembler.toDto(it) },
             challenge = entity.challenge.let { challengeAssembler.toDto(it) },
             seniority = entity.seniority.displayName,
+            score = entity.score,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt
         )
@@ -55,7 +56,8 @@ class InterviewAssembler(
             feedback = dto.feedback,
             behavior = behavior,
             challenge = challenge,
-            seniority = InterviewSeniorityLevel.fromDisplayName(dto.seniority)
+            seniority = InterviewSeniorityLevel.fromDisplayName(dto.seniority),
+            score = dto.score
         )
 
         messageAssembler.toEntityList(dto.messages)
@@ -69,7 +71,7 @@ class InterviewAssembler(
             id = entity.id,
             title = entity.title,
             timeSpent = entity.timeSpent,
-            score = 99999, // Placeholder for score, as it's not in the entity yet
+            score = entity.score,
             behaviorTitle = entity.behavior.title,
             challengeTitle = entity.challenge.title,
             seniority = entity.seniority.displayName,
