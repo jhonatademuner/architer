@@ -3,6 +3,7 @@ package com.architer.domain.interview
 import com.architer.domain.behavior.Behavior
 import com.architer.domain.challenge.Challenge
 import com.architer.domain.interview.message.InterviewMessage
+import com.architer.domain.user.User
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -37,7 +38,7 @@ data class Interview (
     var title: String,
 
     @Column(name = "time_spent", nullable = true)
-    var timeSpent: Int? = null, // in seconds
+    var timeSpent: Int? = null, // in minutes
 
     @Column(name = "feedback", nullable = true)
     var feedback: String? = null,
@@ -60,6 +61,9 @@ data class Interview (
 
     @Column(name = "score", nullable = true)
     var score: Int? = null, // MAX 100
+
+    @Column(name = "user_id", nullable = false, updatable = false)
+    var userId: UUID,
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)

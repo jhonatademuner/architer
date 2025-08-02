@@ -3,6 +3,7 @@ package com.architer.service.interview
 import com.architer.assembler.behavior.BehaviorAssembler
 import com.architer.assembler.challenge.ChallengeAssembler
 import com.architer.assembler.interview.InterviewAssembler
+import com.architer.assembler.interview.InterviewMessageAssembler
 import com.architer.client.assistant.AssistantClient
 import com.architer.domain.interview.InterviewRole
 import com.architer.dto.assistant.AssistantRequestDTO
@@ -16,8 +17,10 @@ import com.architer.dto.interview.message.InterviewMessageCreateDTO
 import com.architer.dto.interview.message.InterviewMessageDTO
 import com.architer.repository.behavior.BehaviorRepository
 import com.architer.repository.challenge.ChallengeRepository
+import com.architer.repository.interview.InterviewMessageRepository
 import com.architer.repository.interview.InterviewRepository
 import com.architer.service.minio.MinioService
+import com.architer.service.user.UserService
 import com.architer.utils.exception.AssistantChatException
 import com.architer.utils.exception.ResourceNotFoundException
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -35,10 +38,32 @@ class InterviewService(
     private val interviewRepository: InterviewRepository,
     private val behaviorRepository: BehaviorRepository,
     private val challengeRepository: ChallengeRepository,
+    private val interviewMessageRepository: InterviewMessageRepository,
     private val interviewAssembler: InterviewAssembler,
     private val challengeAssembler: ChallengeAssembler,
     private val behaviorAssembler: BehaviorAssembler,
+    private val messageAssembler: InterviewMessageAssembler,
+    private val userService: UserService
 ) {
+
+    fun findAll(page: Int, size: Int): List<SimplifiedInterviewDTO> {
+        logger.info { "Finding all interviews - page: $page, size: $size" }
+        val entityList = interviewRepository.findAllByUserId(PageRequest.of(page, size), userService.getCurrentUserId()).content
+        return interviewAssembler.toSimplifiedDtoList(entityList)
+    }
+
+    fun findById(id: UUID): InterviewDTO {
+        logger.info { "Finding chat by ID: $id" }
+        val entity = interviewRepository.findByIdAndUserId(id, userService.getCurrentUserId())
+            .orElseThrow { ResourceNotFoundException("Interview with id $id not found") }
+        return interviewAssembler.toDto(entity)
+    }
+
+    fun findMessagesByInterviewId(interviewId: UUID): MutableList<InterviewMessageDTO> {
+        logger.info { "Finding messages for interview ID: $interviewId" }
+        val messages = interviewMessageRepository.findAllByInterviewIdAndRoleNot(interviewId, InterviewRole.system).toMutableList()
+        return messageAssembler.toDtoList(messages)
+    }
 
     fun create(body: InterviewCreateDTO): SimplifiedInterviewDTO {
         val challengeId = body.challenge
@@ -74,12 +99,11 @@ class InterviewService(
 
         val interviewDto = InterviewDTO(
             title = challenge.title,
-            messages = messages,
             behavior = behaviorAssembler.toDto(behavior),
             challenge = challengeAssembler.toDto(challenge)
         )
 
-        val interview = interviewAssembler.toEntity(interviewDto)
+        val interview = interviewAssembler.toEntity(interviewDto, messages)
 
         return interviewAssembler.toSimplifiedDto(interviewRepository.save(interview))
     }
@@ -100,23 +124,25 @@ class InterviewService(
             imageUrl = imageUrl
         )
 
-        val interviewDto = this.findById(interviewId)
+        val interviewDto = findById(interviewId)
 
         val messageList = mutableListOf<BaseMessageDTO>()
-        messageList.addAll(interviewDto.messages)
+
+        val existingMessages = findAllMessagesByInterviewId(interviewId)
+        messageList.addAll(existingMessages)
         messageList.add(compoundMessage)
 
         val assistantResponse = requestChatCompletion(messageList)
 
-        interviewDto.messages.add(
+        existingMessages.add(
             InterviewMessageDTO(
                 role = message.role,
                 content = message.text,
             )
         )
-        interviewDto.messages.add(assistantResponse)
+        existingMessages.add(assistantResponse)
 
-        val interview = interviewAssembler.toEntity(interviewDto)
+        val interview = interviewAssembler.toEntity(interviewDto, existingMessages)
         interviewRepository.save(interview)
 
         return assistantResponse
@@ -138,22 +164,9 @@ class InterviewService(
         return rawResponse.getMessage()
     }
 
-    fun findAll(page: Int, size: Int): List<SimplifiedInterviewDTO> {
-        logger.info { "Finding all interviews - page: $page, size: $size" }
-        val entityList = interviewRepository.findAll(PageRequest.of(page, size)).content
-        return interviewAssembler.toSimplifiedDtoList(entityList)
-    }
-
-    fun findById(id: UUID): InterviewDTO {
-        logger.info { "Finding chat by ID: $id" }
-        val entity = interviewRepository.findById(id)
-            .orElseThrow { ResourceNotFoundException("Interview with id $id not found") }
-        return interviewAssembler.toDto(entity)
-    }
-
-    fun delete(id: UUID): Unit {
-        logger.info { "Deleting interview - id: $id" }
-        interviewRepository.deleteById(id)
+    private fun findAllMessagesByInterviewId(interviewId: UUID): MutableList<InterviewMessageDTO> {
+        logger.info { "Finding all messages for interview ID: $interviewId" }
+        return messageAssembler.toDtoList(interviewMessageRepository.findAllByInterviewId(interviewId).toMutableList())
     }
 
 }

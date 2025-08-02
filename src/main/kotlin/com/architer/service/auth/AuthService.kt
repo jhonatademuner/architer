@@ -9,15 +9,19 @@ import com.architer.dto.auth.UserRegisterDTO
 import com.architer.dto.user.UserDTO
 import com.architer.repository.auth.RevokedTokenRepository
 import com.architer.repository.user.UserRepository
+import com.architer.security.CustomUserDetails
 import com.architer.security.JwtService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.UUID
+import java.util.*
+
 
 @Service
 class AuthService(
@@ -127,6 +131,14 @@ class AuthService(
             expiresAt = LocalDateTime.now().plusYears(10)
         )
         revokedTokenRepository.save(markerToken)
+    }
+
+    fun getAuthenticatedUser(): User {
+        val authentication: Authentication = SecurityContextHolder.getContext().authentication
+        val userDetails: CustomUserDetails = authentication.principal as CustomUserDetails
+        val user : User = userRepository.findByEmailAndIsActiveTrue(userDetails.getUsername())
+                ?: throw IllegalArgumentException("User not found or inactive")
+        return user
     }
 
 }
