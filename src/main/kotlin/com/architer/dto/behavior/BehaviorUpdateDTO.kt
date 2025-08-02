@@ -7,4 +7,5 @@ data class BehaviorUpdateDTO(
     val title: String,
     val overview: String,
     val content: String,
+    val icon: String? = null
 )

@@ -9,15 +9,19 @@ import com.architer.dto.auth.UserRegisterDTO
 import com.architer.dto.user.UserDTO
 import com.architer.repository.auth.RevokedTokenRepository
 import com.architer.repository.user.UserRepository
+import com.architer.security.CustomUserDetails
 import com.architer.security.JwtService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.UUID
+import java.util.*
+
 
 @Service
 class AuthService(
@@ -30,13 +34,13 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder
 ) {
 
-    fun login(login: String, password: String): JwtTokenDTO {
-        var user: User? = userRepository.findByUsernameAndIsActiveTrue(login)
-        if (user == null) user = userRepository.findByEmailAndIsActiveTrue(login)
+    fun login(email: String, password: String): JwtTokenDTO {
+        var user: User? = userRepository.findByEmailAndIsActiveTrue(email)
+        if (user == null) user = userRepository.findByEmailAndIsActiveTrue(email)
             ?: throw BadCredentialsException("Invalid credentials")
 
         val authentication = authManager.authenticate(
-            UsernamePasswordAuthenticationToken(user.username, password)
+            UsernamePasswordAuthenticationToken(user.email, password)
         )
         if (!authentication.isAuthenticated) throw BadCredentialsException("Invalid credentials")
 
@@ -48,7 +52,7 @@ class AuthService(
 
     fun register(dto: UserRegisterDTO): UserDTO {
         validatePasswordStrength(dto.password)
-        if (userRepository.existsByUsernameOrEmail(dto.username, dto.email)) {
+        if (userRepository.existsByEmail(dto.email)) {
             throw IllegalArgumentException("User with username or email already exists")
         }
         val user = userAssembler.toEntity(dto).apply {
@@ -127,6 +131,14 @@ class AuthService(
             expiresAt = LocalDateTime.now().plusYears(10)
         )
         revokedTokenRepository.save(markerToken)
+    }
+
+    fun getAuthenticatedUser(): User {
+        val authentication: Authentication = SecurityContextHolder.getContext().authentication
+        val userDetails: CustomUserDetails = authentication.principal as CustomUserDetails
+        val user : User = userRepository.findByEmailAndIsActiveTrue(userDetails.getUsername())
+                ?: throw IllegalArgumentException("User not found or inactive")
+        return user
     }
 
 }

@@ -1,8 +1,9 @@
 package com.architer.domain.interview
 
-enum class InterviewSeniorityLevel {
-    JUNIOR,
-    MID,
-    SENIOR,
-    ARCHITECT;
+enum class InterviewSeniorityLevel(val displayName: String) {
+    JUNIOR("Junior"),
+    MID("Mid-level"),
+    SENIOR("Senior"),
+    ARCHITECT("Architect");
+
 }

@@ -11,9 +11,9 @@ import java.util.UUID
 class CustomUserDetailsService(
     private val userRepository: UserRepository
 ) : UserDetailsService {
-    override fun loadUserByUsername(username: String): UserDetails {
-        val user = userRepository.findByUsernameAndIsActiveTrue(username)
-            ?: throw UsernameNotFoundException("User not found with username: $username")
+    override fun loadUserByUsername(email: String): UserDetails {
+        val user = userRepository.findByEmailAndIsActiveTrue(email)
+            ?: throw UsernameNotFoundException("User not found with email: $email")
         return CustomUserDetails(user)
     }
 

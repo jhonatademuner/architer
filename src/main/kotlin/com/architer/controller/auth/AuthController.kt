@@ -28,7 +28,7 @@ class AuthController(
 
     @PostMapping("/v1/auth/login")
     fun login(@RequestBody dto: UserLoginDTO): ResponseEntity<JwtTokenDTO> {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.login(dto.login, dto.password))
+        return ResponseEntity.status(HttpStatus.OK).body(authService.login(dto.email, dto.password))
     }
 
     @PostMapping("/v1/auth/logout")

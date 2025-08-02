@@ -2,6 +2,7 @@ package com.architer.config
 
 import com.architer.config.filter.JwtFilter
 import com.architer.security.CustomUserDetailsService
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
@@ -32,6 +34,9 @@ class SecurityConfig(
         return http
             .cors(Customizer.withDefaults())
             .csrf { it.disable() }
+            .exceptionHandling { exceptionHandling ->
+                exceptionHandling.authenticationEntryPoint(authenticationEntryPoint())
+            }
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers(
@@ -91,4 +96,14 @@ class SecurityConfig(
         source.registerCorsConfiguration("/api/**", config)
         return source
     }
+
+    @Bean
+    fun authenticationEntryPoint(): AuthenticationEntryPoint {
+        return AuthenticationEntryPoint { request, response, authException ->
+            response.status = HttpServletResponse.SC_UNAUTHORIZED
+            response.contentType = "application/json"
+            response.writer.write("""{"error": "Unauthorized", "message": "${authException.message}"}""")
+        }
+    }
+
 }

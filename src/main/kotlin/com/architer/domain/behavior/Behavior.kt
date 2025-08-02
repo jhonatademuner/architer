@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
-@Table(name = "assistant_behaviors")
+@Table(name = "behaviors")
 @EntityListeners(AuditingEntityListener::class)
 data class Behavior(
 
@@ -24,6 +24,9 @@ data class Behavior(
 
     @Column(name = "content", nullable = false)
     var content: String,
+
+    @Column(name = "icon", nullable = true)
+    var icon: String? = null,
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)

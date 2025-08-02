@@ -4,6 +4,7 @@ import com.architer.assembler.challenge.ChallengeAssembler
 import com.architer.dto.challenge.ChallengeCreateDTO
 import com.architer.dto.challenge.ChallengeDTO
 import com.architer.dto.challenge.ChallengeUpdateDTO
+import com.architer.dto.challenge.SimplifiedChallengeDTO
 import com.architer.repository.challenge.ChallengeRepository
 import com.architer.utils.exception.ResourceNotFoundException
 import org.springframework.data.domain.PageRequest
@@ -21,9 +22,9 @@ class ChallengeService(
         return challengeAssembler.toDto(challengeRepository.save(entity))
     }
 
-    fun findAll(page: Int, size: Int): List<ChallengeDTO> {
+    fun findAll(page: Int, size: Int): List<SimplifiedChallengeDTO> {
         val entityList = challengeRepository.findAll(PageRequest.of(page, size)).content
-        return challengeAssembler.toDtoList(entityList)
+        return challengeAssembler.toSimplifiedDtoList(entityList)
     }
 
     fun findById(id: UUID): ChallengeDTO {

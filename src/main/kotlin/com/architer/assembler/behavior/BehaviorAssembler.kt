@@ -5,6 +5,7 @@ import com.architer.domain.behavior.Behavior
 import com.architer.dto.behavior.BehaviorCreateDTO
 import com.architer.dto.behavior.BehaviorDTO
 import com.architer.dto.behavior.BehaviorUpdateDTO
+import com.architer.dto.behavior.SimplifiedBehaviorDTO
 import org.springframework.stereotype.Component
 
 @Component
@@ -16,8 +17,7 @@ class BehaviorAssembler : AbstractAssembler<Behavior, BehaviorDTO>() {
             title = entity.title,
             overview = entity.overview,
             content = entity.content,
-            updatedAt = entity.updatedAt,
-            createdAt = entity.createdAt
+            icon = entity.icon
         )
     }
 
@@ -27,6 +27,7 @@ class BehaviorAssembler : AbstractAssembler<Behavior, BehaviorDTO>() {
             title = dto.title,
             overview = dto.overview,
             content = dto.content,
+            icon = dto.icon
         )
     }
 
@@ -34,6 +35,7 @@ class BehaviorAssembler : AbstractAssembler<Behavior, BehaviorDTO>() {
         entity.title = dto.title
         entity.overview = dto.overview
         entity.content = dto.content
+        entity.icon = dto.icon
         return entity
     }
 
@@ -41,8 +43,22 @@ class BehaviorAssembler : AbstractAssembler<Behavior, BehaviorDTO>() {
         return Behavior(
             title = dto.title,
             overview = dto.overview,
-            content = dto.content
+            content = dto.content,
+            icon = dto.icon
         )
+    }
+
+    fun toSimplifiedDto(entity: Behavior): SimplifiedBehaviorDTO {
+        return SimplifiedBehaviorDTO(
+            id = entity.id,
+            title = entity.title,
+            overview = entity.overview,
+            icon = entity.icon
+        )
+    }
+
+    fun toSimplifiedDtoList(entities: List<Behavior>): List<SimplifiedBehaviorDTO> {
+        return entities.map { toSimplifiedDto(it) }
     }
 
 }

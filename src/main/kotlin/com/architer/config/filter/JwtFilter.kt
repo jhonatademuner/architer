@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import java.time.LocalDateTime
 
 private val logger = KotlinLogging.logger {}
 
@@ -45,7 +46,8 @@ class JwtFilter(
 
                 // Token type validation
                 if (jwtService.isRefreshToken(jwtToken) &&
-                    request.servletPath != "/api/v1/auth/refresh") {
+                    request.servletPath != "/api/v1/auth/refresh"
+                ) {
                     throw BadCredentialsException("Refresh token used as access token")
                 }
 
@@ -64,7 +66,19 @@ class JwtFilter(
                 }
             } catch (ex: Exception) {
                 SecurityContextHolder.clearContext()
-                response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid credentials")
+                response.status = HttpStatus.UNAUTHORIZED.value()
+                response.contentType = "application/json"
+                response.writer.write(
+                    """
+                    {
+                        "timestamp": "${LocalDateTime.now()}",
+                        "status": 401,
+                        "error": "Unauthorized",
+                        "message": "${ex.message}",
+                        "path": "${request.requestURI}"
+                    }
+                    """.trimIndent()
+                )
                 return
             }
         }

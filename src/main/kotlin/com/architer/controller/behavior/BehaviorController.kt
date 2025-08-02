@@ -3,6 +3,7 @@ package com.architer.controller.behavior
 import com.architer.dto.behavior.BehaviorCreateDTO
 import com.architer.dto.behavior.BehaviorDTO
 import com.architer.dto.behavior.BehaviorUpdateDTO
+import com.architer.dto.behavior.SimplifiedBehaviorDTO
 import com.architer.service.behavior.BehaviorService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,7 +22,7 @@ class BehaviorController(
     }
 
     @GetMapping("/v1/behaviors")
-    fun findAll(@RequestParam page: Int = 0, @RequestParam size: Int = 10): ResponseEntity<List<BehaviorDTO>> {
+    fun findAll(@RequestParam page: Int = 0, @RequestParam size: Int = 10): ResponseEntity<List<SimplifiedBehaviorDTO>> {
         return ResponseEntity.status(HttpStatus.OK).body(behaviorService.findAll(page, size))
     }
 

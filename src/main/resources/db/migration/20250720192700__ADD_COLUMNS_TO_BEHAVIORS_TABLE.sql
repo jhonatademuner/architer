@@ -1,0 +1,2 @@
+ALTER TABLE behaviors
+	ADD COLUMN icon TEXT

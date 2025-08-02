@@ -17,7 +17,7 @@ class CustomUserDetails(
 
     override fun getPassword(): String = user.password
 
-    override fun getUsername(): String = user.username
+    override fun getUsername(): String = user.email
 
     override fun isAccountNonExpired(): Boolean = true
 
@@ -30,6 +30,8 @@ class CustomUserDetails(
     fun getId(): UUID? = user.id
 
     fun getEmail(): String = user.email
+
+    fun getName(): String = user.name
 
     fun isAdmin(): Boolean = user.isAdmin
 

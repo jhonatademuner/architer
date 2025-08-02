@@ -3,6 +3,7 @@ package com.architer.controller.challenge
 import com.architer.dto.challenge.ChallengeCreateDTO
 import com.architer.dto.challenge.ChallengeDTO
 import com.architer.dto.challenge.ChallengeUpdateDTO
+import com.architer.dto.challenge.SimplifiedChallengeDTO
 import com.architer.service.challenge.ChallengeService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,7 +22,7 @@ class ChallengeController(
     }
 
     @GetMapping("/v1/challenges")
-    fun findAll(@RequestParam page: Int = 0, @RequestParam size: Int = 10): ResponseEntity<List<ChallengeDTO>> {
+    fun findAll(@RequestParam page: Int = 0, @RequestParam size: Int = 10): ResponseEntity<List<SimplifiedChallengeDTO>> {
         return ResponseEntity.status(HttpStatus.OK).body(challengeService.findAll(page, size))
     }
 

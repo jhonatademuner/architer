@@ -6,9 +6,8 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface UserRepository  : JpaRepository<User, UUID>{
-    fun findByUsernameAndIsActiveTrue(username: String): User?
+interface UserRepository : JpaRepository<User, UUID>{
     fun findByEmailAndIsActiveTrue(email: String): User?
-    fun existsByUsernameOrEmail(username: String, email: String): Boolean
+    fun existsByEmail(email: String): Boolean
     fun findByIdAndIsActiveTrue(id: UUID): User?
 }

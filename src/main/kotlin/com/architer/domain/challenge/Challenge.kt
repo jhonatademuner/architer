@@ -25,6 +25,17 @@ data class Challenge(
     @Column(name = "content", nullable = false)
     var content: String,
 
+    @Column(name = "category", nullable = false)
+    @Enumerated(EnumType.STRING)
+    var category: ChallengeCategory,
+
+    @Column(name = "difficulty", nullable = false)
+    @Enumerated(EnumType.STRING)
+    var difficulty: ChallengeDifficulty,
+
+    @Column(name = "icon", nullable = true)
+    var icon: String? = null,
+
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     var updatedAt: LocalDateTime? = null,
