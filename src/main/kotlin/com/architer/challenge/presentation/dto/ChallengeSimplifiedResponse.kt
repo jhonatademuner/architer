@@ -1,0 +1,15 @@
+package com.architer.challenge.presentation.dto
+
+import com.architer.challenge.domain.model.ChallengeCategory
+import com.architer.challenge.domain.model.ChallengeDifficulty
+import java.util.UUID
+
+data class ChallengeSimplifiedResponse (
+    var id: UUID?,
+    var icon: String? = null,
+    var title: String,
+    var overview: String,
+    var description: String,
+    var category: ChallengeCategory,
+    var difficulty: ChallengeDifficulty,
+)
