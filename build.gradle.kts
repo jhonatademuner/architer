@@ -41,6 +41,7 @@ dependencies {
 	implementation("org.slf4j:slf4j-api:2.0.16")
 	implementation("org.codehaus.janino:janino:3.1.6")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
+	implementation("org.springframework.boot:spring-boot-starter-amqp")
 	implementation("org.springframework.security:spring-security-core:6.5.0")
 	implementation("org.springframework.security:spring-security-config:6.5.0")
 	implementation("org.springframework.security:spring-security-web:6.5.0")

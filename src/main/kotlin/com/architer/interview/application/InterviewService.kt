@@ -7,6 +7,7 @@ import com.architer.ai.domain.model.message.AssistantMessage
 import com.architer.behavior.domain.repository.BehaviorRepository
 import com.architer.challenge.domain.repository.ChallengeRepository
 import com.architer.interview.domain.model.enums.InterviewRole
+import com.architer.interview.domain.model.enums.InterviewStatus
 import com.architer.interview.domain.repository.InterviewMessageRepository
 import com.architer.interview.domain.repository.InterviewRepository
 import com.architer.interview.presentation.dto.InterviewCreateRequest
@@ -126,6 +127,13 @@ class InterviewService(
             )
         }
         return AssistantMessage(role = InterviewRole.user.toString(), content = userMessage.text)
+    }
+
+    fun finishInterview(interviewId: UUID) {
+        val interview = repository.findByIdAndUserId(interviewId, currentUserHelper.getCurrentUserId())
+            .orElseThrow { ResourceNotFoundException("Interview with id $interviewId not found") }
+        interview.status = InterviewStatus.WAITING_FOR_FEEDBACK
+        repository.save(interview)
     }
 
 }
