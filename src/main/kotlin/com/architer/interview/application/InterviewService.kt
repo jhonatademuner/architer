@@ -1,15 +1,16 @@
 package com.architer.interview.application
 
-import com.architer.ai.application.AssistantService
 import com.architer.ai.domain.model.message.AssistantBaseMessage
 import com.architer.ai.domain.model.message.AssistantCompoundMessage
 import com.architer.ai.domain.model.message.AssistantMessage
+import com.architer.ai.infrastructure.AssistantPort
 import com.architer.behavior.domain.repository.BehaviorRepository
 import com.architer.challenge.domain.repository.ChallengeRepository
 import com.architer.interview.domain.model.enums.InterviewRole
 import com.architer.interview.domain.model.enums.InterviewStatus
 import com.architer.interview.domain.repository.InterviewMessageRepository
 import com.architer.interview.domain.repository.InterviewRepository
+import com.architer.interview.infrastructure.rabbitmq.publisher.InterviewEventPublisher
 import com.architer.interview.presentation.dto.InterviewCreateRequest
 import com.architer.interview.presentation.dto.InterviewMessageResponse
 import com.architer.interview.presentation.dto.InterviewResponse
@@ -17,10 +18,11 @@ import com.architer.interview.presentation.dto.InterviewSimplifiedResponse
 import com.architer.interview.presentation.dto.InterviewMessageSendRequest
 import com.architer.interview.presentation.mapper.InterviewMapper
 import com.architer.interview.presentation.mapper.InterviewMessageMapper
+import com.architer.messaging.domain.model.InterviewEvent
 import com.architer.shared.application.CurrentUserHelper
 import com.architer.shared.exception.ResourceNotFoundException
 import com.architer.shared.model.PaginatedList
-import com.architer.storage.application.StorageService
+import com.architer.storage.infrastructure.StoragePort
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -34,8 +36,9 @@ class InterviewService(
     private val challengeRepository: ChallengeRepository,
     private val mapper: InterviewMapper,
     private val messageMapper: InterviewMessageMapper,
-    private val assistantService: AssistantService,
-    private val storageService: StorageService,
+    private val assistantPort: AssistantPort,
+    private val storagePort: StoragePort,
+    private val eventPublisher: InterviewEventPublisher,
     private val currentUserHelper: CurrentUserHelper,
 ) {
 
@@ -81,8 +84,8 @@ class InterviewService(
         )
 
         val assistantMessages = mutableListOf(behaviorMessage, seniorityLevelMessage, challengeMessage)
-        val assistantResponse = assistantService.requestChatCompletion(assistantMessages)
-        assistantMessages.add(assistantResponse)
+        val assistantResponse = assistantPort.requestChatCompletion(assistantMessages)
+        assistantMessages.add(assistantResponse.getMessage())
 
         val messages = assistantMessages
             .map(messageMapper::toEntity)
@@ -106,20 +109,20 @@ class InterviewService(
                 .map(messageMapper::toAssistantMessage)
                 .plus(userMessage)
 
-        val assistantResponse = assistantService.requestChatCompletion(messageList)
+        val assistantResponse = assistantPort.requestChatCompletion(messageList)
 
         val interview = repository.findByIdAndUserId(interviewId, currentUserHelper.getCurrentUserId())
             .orElseThrow { ResourceNotFoundException("Interview with id $interviewId not found") }
 
         messageRepository.save(messageMapper.toEntity(userMessage, interview))
-        val savedEntity = messageRepository.save(messageMapper.toEntity(assistantResponse, interview))
+        val savedEntity = messageRepository.save(messageMapper.toEntity(assistantResponse.getMessage(), interview))
 
         return messageMapper.toResponse(savedEntity)
     }
 
     private fun assembleUserMessage(interviewId: UUID, userMessage: InterviewMessageSendRequest, image: MultipartFile?): AssistantBaseMessage {
         if(image != null && !image.isEmpty) {
-            val imageUrl = storageService.uploadInterviewDiagram(interviewId, image)
+            val imageUrl = storagePort.uploadInterviewDiagram(interviewId, image)
             return AssistantCompoundMessage(
                 role = userMessage.role.toString(),
                 text = userMessage.text,
@@ -129,10 +132,14 @@ class InterviewService(
         return AssistantMessage(role = InterviewRole.user.toString(), content = userMessage.text)
     }
 
-    fun finishInterview(interviewId: UUID) {
+    fun finish(interviewId: UUID) {
         val interview = repository.findByIdAndUserId(interviewId, currentUserHelper.getCurrentUserId())
             .orElseThrow { ResourceNotFoundException("Interview with id $interviewId not found") }
         interview.status = InterviewStatus.WAITING_FOR_FEEDBACK
+        val event = InterviewEvent(
+            interviewId = interviewId
+        )
+        eventPublisher.publishInterviewFeedbackRequestEvent(event)
         repository.save(interview)
     }
 
