@@ -35,6 +35,6 @@ clients:
     secret-key: <MINIO_SECRET_KEY>
     bucket: <MINIO_BUCKET>
 
-rabbitmq:
-  exchange:
-    name: architer.events
+messaging:
+  rabbitmq:
+    exchange: architer-exchange
