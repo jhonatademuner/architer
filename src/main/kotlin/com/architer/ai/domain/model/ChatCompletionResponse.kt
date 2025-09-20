@@ -72,8 +72,8 @@ data class ChatCompletionResponse(
     )
 
     fun getMessage(): AssistantMessage {
-        val message: AssistantChatResponseMessage? = choices.firstOrNull()?.message
-        if (message == null) throw ChatCompletionException("No message found in the assistant response.")
+        val message: AssistantChatResponseMessage = choices.firstOrNull()?.message
+            ?: throw ChatCompletionException("No message found in the assistant response.")
         return AssistantMessage(
             role = message.role,
             content = message.content

@@ -44,6 +44,11 @@ class InterviewController(
         return service.findById(id)
     }
 
+    @PostMapping("/{interviewId}/finish")
+    fun finish(@PathVariable interviewId: UUID) {
+        service.finish(interviewId)
+    }
+
     @PostMapping("/{interviewId}/messages", consumes = ["multipart/form-data"])
     fun sendMessage(
         @PathVariable interviewId: UUID,

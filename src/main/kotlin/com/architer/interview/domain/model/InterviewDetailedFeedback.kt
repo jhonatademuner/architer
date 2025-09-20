@@ -1,5 +1,6 @@
 package com.architer.interview.domain.model
 
+import com.architer.interview.domain.model.enums.InterviewDetailedFeedbackSubject
 import com.architer.interview.domain.model.enums.InterviewFeedbackEvaluation
 import jakarta.persistence.*
 import java.util.UUID
@@ -16,8 +17,9 @@ data class InterviewDetailedFeedback(
     @JoinColumn(name = "feedback_id", nullable = false, updatable = false)
     var feedback: InterviewFeedback? = null,
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "subject", nullable = false, updatable = false)
-    var subject: String,
+    var subject: InterviewDetailedFeedbackSubject,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "evaluation", nullable = false, updatable = false)

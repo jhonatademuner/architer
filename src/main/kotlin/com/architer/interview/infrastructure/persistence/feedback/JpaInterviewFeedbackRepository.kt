@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID
 
 interface JpaInterviewFeedbackRepository : JpaRepository<InterviewFeedback, UUID> {
+    fun findAllByInterviewId(interviewId: UUID): List<InterviewFeedback>
 }
