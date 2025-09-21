@@ -99,7 +99,12 @@ class JwtService(
             claims
         } catch (ex: ExpiredJwtException) {
             logger.warn { "JWT expired: ${ex.message}" }
-            null
+            val claims = ex.claims
+            if (claims.issuer != jwtProperties.issuer || claims.audience != jwtProperties.audience) {
+                logger.warn { "Invalid issuer or audience in expired token: ${claims.issuer} / ${claims.audience}" }
+                return null
+            }
+            claims
         } catch (ex: JwtException) {
             logger.warn { "Invalid JWT: ${ex.message}" }
             null
