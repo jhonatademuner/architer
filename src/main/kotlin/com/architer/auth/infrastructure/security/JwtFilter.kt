@@ -65,6 +65,8 @@ class JwtFilter(
                         details = WebAuthenticationDetailsSource().buildDetails(request)
                     }
                     SecurityContextHolder.getContext().authentication = authToken
+                } else {
+                    throw BadCredentialsException("Token is invalid or expired")
                 }
             } catch (ex: Exception) {
                 SecurityContextHolder.clearContext()
