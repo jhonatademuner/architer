@@ -20,7 +20,6 @@ spring:
 security:
   jwt:
     secret-key: ac5027cd33cd1482719eeeafe46d0d1e95d07a7921e0fa11ce38310e7af6bde6
-    expiration-ms: 86400000
     issuer: architer-api
     audience: architer-client
 
