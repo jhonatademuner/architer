@@ -35,7 +35,7 @@ class JwtFilter(
         val authHeader = request.getHeader("Authorization")
         val jwtToken = authHeader?.takeIf { it.startsWith("Bearer ") }?.substringAfter("Bearer ")?.trim()
 
-        if (jwtToken != null && SecurityContextHolder.getContext().authentication == null) {
+        if (jwtToken != null && SecurityContextHolder.getContext().authentication == null && !request.servletPath.contains("/auth/refresh")) {
             try {
                 // Revocation check
                 jwtService.extractJti(jwtToken)?.let { jti ->
@@ -46,9 +46,7 @@ class JwtFilter(
                 }
 
                 // Token type validation
-                if (jwtService.extractTokenType(jwtToken) == TokenType.REFRESH &&
-                    !request.servletPath.contains("/auth/refresh")
-                ) {
+                if (jwtService.extractTokenType(jwtToken) == TokenType.REFRESH) {
                     throw BadCredentialsException("Refresh token used as access token")
                 }
 
