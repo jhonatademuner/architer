@@ -1,6 +1,8 @@
 package com.architer.interview.presentation
 
 import com.architer.interview.application.InterviewService
+import com.architer.interview.domain.model.enums.InterviewSeniority
+import com.architer.interview.domain.model.enums.InterviewStatus
 import com.architer.interview.presentation.dto.InterviewCreateRequest
 import com.architer.interview.presentation.dto.InterviewMessageResponse
 import com.architer.interview.presentation.dto.InterviewResponse
@@ -33,10 +35,13 @@ class InterviewController(
 
     @GetMapping
     fun findAll(
+        @RequestParam(required = false) term: String?,
+        @RequestParam(required = false) status: InterviewStatus?,
+        @RequestParam(required = false) seniority: InterviewSeniority?,
         @RequestParam page: Int = 1,
         @RequestParam size: Int = 10
     ): PaginatedList<InterviewSimplifiedResponse> {
-        return service.findAll(page, size)
+        return service.findAll(term, status, seniority, page, size)
     }
 
     @GetMapping("/{id}")

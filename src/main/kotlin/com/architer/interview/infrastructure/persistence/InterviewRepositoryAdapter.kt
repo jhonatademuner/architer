@@ -1,6 +1,8 @@
 package com.architer.interview.infrastructure.persistence
 
 import com.architer.interview.domain.model.Interview
+import com.architer.interview.domain.model.enums.InterviewSeniority
+import com.architer.interview.domain.model.enums.InterviewStatus
 import com.architer.interview.domain.repository.InterviewRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -18,4 +20,11 @@ class InterviewRepositoryAdapter(
     override fun deleteById(id: UUID) = jpaRepository.deleteById(id)
     override fun findAllByUserId(pageable: Pageable, userId: UUID): Page<Interview> = jpaRepository.findAllByUserId(pageable, userId)
     override fun findByIdAndUserId(id: UUID, userId: UUID): Optional<Interview> = jpaRepository.findByIdAndUserId(id, userId)
+    override fun findAllByUserIdWithFilters(
+        userId: UUID,
+        term: String?,
+        status: InterviewStatus?,
+        seniority: InterviewSeniority?,
+        pageable: Pageable
+    ): Page<Interview> = jpaRepository.findAllByUserIdWithFilters(userId, term, status, seniority, pageable)
 }
