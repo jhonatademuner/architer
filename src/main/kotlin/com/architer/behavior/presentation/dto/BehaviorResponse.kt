@@ -4,6 +4,7 @@ import java.util.UUID
 
 data class BehaviorResponse(
     var id: UUID?,
+    var externalId: String,
     var icon: String? = null,
     var title: String,
     var overview: String,
