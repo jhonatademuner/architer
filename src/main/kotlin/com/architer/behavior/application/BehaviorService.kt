@@ -7,7 +7,7 @@ import com.architer.behavior.presentation.dto.BehaviorSimplifiedResponse
 import com.architer.behavior.presentation.dto.BehaviorUpdateRequest
 import com.architer.behavior.presentation.mapper.BehaviorMapper
 import com.architer.shared.exception.ResourceNotFoundException
-import com.architer.shared.model.PaginatedList
+import com.architer.shared.presentation.dto.PaginatedList
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.util.UUID

@@ -22,7 +22,7 @@ import com.architer.interview.presentation.mapper.InterviewMessageMapper
 import com.architer.messaging.domain.model.InterviewEvent
 import com.architer.shared.application.CurrentUserHelper
 import com.architer.shared.exception.ResourceNotFoundException
-import com.architer.shared.model.PaginatedList
+import com.architer.shared.presentation.dto.PaginatedList
 import com.architer.storage.infrastructure.StoragePort
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service

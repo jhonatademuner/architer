@@ -5,7 +5,7 @@ import com.architer.challenge.presentation.dto.ChallengeCreateRequest
 import com.architer.challenge.presentation.dto.ChallengeResponse
 import com.architer.challenge.presentation.dto.ChallengeUpdateRequest
 import com.architer.challenge.presentation.dto.ChallengeSimplifiedResponse
-import com.architer.shared.model.PaginatedList
+import com.architer.shared.presentation.dto.PaginatedList
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping

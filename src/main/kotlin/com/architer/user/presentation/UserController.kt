@@ -1,6 +1,6 @@
 package com.architer.user.presentation
 
-import com.architer.shared.model.PaginatedList
+import com.architer.shared.presentation.dto.PaginatedList
 import com.architer.user.application.UserService
 import com.architer.user.presentation.dto.UserCreateRequest
 import com.architer.user.presentation.dto.UserResponse

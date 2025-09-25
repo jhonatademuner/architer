@@ -8,7 +8,7 @@ import com.architer.interview.presentation.dto.InterviewMessageResponse
 import com.architer.interview.presentation.dto.InterviewResponse
 import com.architer.interview.presentation.dto.InterviewSimplifiedResponse
 import com.architer.interview.presentation.dto.InterviewMessageSendRequest
-import com.architer.shared.model.PaginatedList
+import com.architer.shared.presentation.dto.PaginatedList
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

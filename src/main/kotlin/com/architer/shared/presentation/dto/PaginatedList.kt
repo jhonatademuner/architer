@@ -1,4 +1,4 @@
-package com.architer.shared.model
+package com.architer.shared.presentation.dto
 
 import org.springframework.data.domain.Page
 

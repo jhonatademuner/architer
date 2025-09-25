@@ -7,7 +7,7 @@ import com.architer.challenge.presentation.dto.ChallengeUpdateRequest
 import com.architer.challenge.presentation.dto.ChallengeSimplifiedResponse
 import com.architer.challenge.presentation.mapper.ChallengeMapper
 import com.architer.shared.exception.ResourceNotFoundException
-import com.architer.shared.model.PaginatedList
+import com.architer.shared.presentation.dto.PaginatedList
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.util.UUID

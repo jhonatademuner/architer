@@ -1,7 +1,7 @@
 package com.architer.user.application
 
 import com.architer.shared.exception.ResourceNotFoundException
-import com.architer.shared.model.PaginatedList
+import com.architer.shared.presentation.dto.PaginatedList
 import com.architer.user.domain.repository.UserRepository
 import com.architer.user.infrastructure.PasswordHelper
 import com.architer.user.presentation.dto.UserCreateRequest
