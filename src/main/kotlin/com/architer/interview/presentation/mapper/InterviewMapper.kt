@@ -40,7 +40,8 @@ class InterviewMapper(
             duration = entity.duration,
             behaviorTitle = entity.behavior.title,
             challengeTitle = entity.challenge.title,
-            seniority = entity.seniority.toString(),
+            seniority = entity.seniority,
+            status = entity.status,
             createdAt = entity.createdAt
         )
     }

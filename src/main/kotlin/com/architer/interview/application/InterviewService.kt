@@ -7,6 +7,7 @@ import com.architer.ai.infrastructure.AssistantPort
 import com.architer.behavior.domain.repository.BehaviorRepository
 import com.architer.challenge.domain.repository.ChallengeRepository
 import com.architer.interview.domain.model.enums.InterviewRole
+import com.architer.interview.domain.model.enums.InterviewSeniority
 import com.architer.interview.domain.model.enums.InterviewStatus
 import com.architer.interview.domain.repository.InterviewMessageRepository
 import com.architer.interview.domain.repository.InterviewRepository
@@ -21,7 +22,7 @@ import com.architer.interview.presentation.mapper.InterviewMessageMapper
 import com.architer.messaging.domain.model.InterviewEvent
 import com.architer.shared.application.CurrentUserHelper
 import com.architer.shared.exception.ResourceNotFoundException
-import com.architer.shared.model.PaginatedList
+import com.architer.shared.presentation.dto.PaginatedList
 import com.architer.storage.infrastructure.StoragePort
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -42,9 +43,23 @@ class InterviewService(
     private val currentUserHelper: CurrentUserHelper,
 ) {
 
-    fun findAll(page: Int, size: Int): PaginatedList<InterviewSimplifiedResponse> {
+    fun findAll(
+        term: String?,
+        status: InterviewStatus?,
+        seniority: InterviewSeniority?,
+        page: Int,
+        size: Int
+    ): PaginatedList<InterviewSimplifiedResponse> {
+        val pageable = PageRequest.of(page-1, size)
+        
         val pageResult = repository
-            .findAllByUserId(PageRequest.of(page-1, size), currentUserHelper.getCurrentUserId())
+            .findAllByUserIdWithFilters(
+                currentUserHelper.getCurrentUserId(),
+                term,
+                status,
+                seniority,
+                pageable
+            )
             .map(mapper::toSimplifiedResponse)
         return PaginatedList.from(pageResult)
     }

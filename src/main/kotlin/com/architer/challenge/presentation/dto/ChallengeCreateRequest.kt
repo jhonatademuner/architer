@@ -4,6 +4,7 @@ import com.architer.challenge.domain.model.ChallengeCategory
 import com.architer.challenge.domain.model.ChallengeDifficulty
 
 data class ChallengeCreateRequest(
+    val externalId: String,
     val icon: String? = null,
     val title: String,
     val overview: String,

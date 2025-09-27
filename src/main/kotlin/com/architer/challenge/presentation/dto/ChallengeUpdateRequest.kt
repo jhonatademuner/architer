@@ -6,6 +6,7 @@ import java.util.UUID
 
 data class ChallengeUpdateRequest(
     val id: UUID,
+    val externalId: String,
     val icon: String? = null,
     val title: String,
     val overview: String,

@@ -12,6 +12,7 @@ class BehaviorMapper {
 
     fun toEntity(request: BehaviorCreateRequest): Behavior {
         return Behavior(
+            externalId = request.externalId,
             icon = request.icon,
             title = request.title,
             overview = request.overview,
@@ -22,6 +23,7 @@ class BehaviorMapper {
 
     fun updateEntity(request: BehaviorUpdateRequest, entity: Behavior): Behavior {
         return entity.apply {
+            externalId = request.externalId
             icon = request.icon
             title = request.title
             overview = request.overview
@@ -33,6 +35,7 @@ class BehaviorMapper {
     fun toResponse(behavior: Behavior): BehaviorResponse {
         return BehaviorResponse(
             id = behavior.id,
+            externalId = behavior.externalId,
             icon = behavior.icon,
             title = behavior.title,
             overview = behavior.overview,
@@ -44,6 +47,7 @@ class BehaviorMapper {
     fun toSimplifiedResponse(behavior: Behavior): BehaviorSimplifiedResponse {
         return BehaviorSimplifiedResponse(
             id = behavior.id,
+            externalId = behavior.externalId,
             icon = behavior.icon,
             title = behavior.title,
             overview = behavior.overview,

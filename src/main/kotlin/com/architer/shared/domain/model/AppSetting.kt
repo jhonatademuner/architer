@@ -1,8 +1,11 @@
-package com.architer.behavior.domain.model
+package com.architer.shared.domain.model
 
+import com.architer.shared.domain.model.enums.AppSettingValueType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -14,31 +17,26 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
-@Table(name = "behaviors")
+@Table(name = "app_settings")
 @EntityListeners(AuditingEntityListener::class)
-data class Behavior(
+data class AppSetting(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: UUID? = null,
 
-    @Column(name = "external_id", nullable = false)
-    var externalId: String,
+    @Column(name = "setting_key", nullable = false, unique = true)
+    var settingKey: String,
 
-    @Column(name = "icon", nullable = true)
-    var icon: String? = null,
+    @Column(name = "setting_value")
+    var settingValue: String,
 
-    @Column(name = "title", nullable = false)
-    var title: String,
-
-    @Column(name = "overview", nullable = false)
-    var overview: String,
-
-    @Column(name = "description", nullable = true)
+    @Column(name = "description", nullable = false)
     var description: String,
 
-    @Column(name = "content", nullable = false)
-    var content: String,
+    @Column(name = "value_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    var valueType: AppSettingValueType,
 
     @LastModifiedDate
     @Column(name = "last_modified_at", nullable = false)
@@ -47,5 +45,20 @@ data class Behavior(
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: LocalDateTime? = null,
+){
+    fun getBooleanValue(): Boolean {
+        return settingValue.toBoolean()
+    }
 
-    )
+    fun toStringValue(): String {
+        return settingValue
+    }
+
+    fun toIntValue(): Int {
+        return settingValue.toInt()
+    }
+
+    fun toFloatValue(): Float {
+        return settingValue.toFloat()
+    }
+}

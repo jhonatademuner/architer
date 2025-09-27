@@ -3,8 +3,9 @@ package com.architer.behavior.presentation.dto
 import java.util.UUID
 
 data class BehaviorUpdateRequest(
-    val icon: String? = null,
     val id: UUID,
+    val externalId: String,
+    val icon: String? = null,
     val title: String,
     val overview: String,
     val description: String,

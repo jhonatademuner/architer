@@ -5,7 +5,7 @@ import com.architer.behavior.presentation.dto.BehaviorCreateRequest
 import com.architer.behavior.presentation.dto.BehaviorResponse
 import com.architer.behavior.presentation.dto.BehaviorSimplifiedResponse
 import com.architer.behavior.presentation.dto.BehaviorUpdateRequest
-import com.architer.shared.model.PaginatedList
+import com.architer.shared.presentation.dto.PaginatedList
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
