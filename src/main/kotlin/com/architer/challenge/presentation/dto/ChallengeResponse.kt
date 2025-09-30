@@ -14,4 +14,5 @@ data class ChallengeResponse (
     var content: String,
     var category: ChallengeCategory,
     var difficulty: ChallengeDifficulty,
+    var published: Boolean
 )

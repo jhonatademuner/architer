@@ -12,4 +12,5 @@ data class ChallengeCreateRequest(
     val content: String,
     val category: ChallengeCategory,
     val difficulty: ChallengeDifficulty,
+    val published: Boolean = true
 )

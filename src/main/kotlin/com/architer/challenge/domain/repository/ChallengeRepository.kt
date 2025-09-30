@@ -11,4 +11,6 @@ interface ChallengeRepository {
     fun findAll(pageable: Pageable): Page<Challenge>
     fun findById(id: UUID): Optional<Challenge>
     fun deleteById(id: UUID)
+    fun findAllByPublishedIsTrue(pageable: Pageable): Page<Challenge>
+    fun findByIdAndPublishedIsTrue(id: UUID): Optional<Challenge>
 }

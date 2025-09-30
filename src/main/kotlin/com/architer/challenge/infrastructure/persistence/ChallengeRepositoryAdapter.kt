@@ -16,4 +16,6 @@ class ChallengeRepositoryAdapter(
     override fun findAll(pageable: Pageable): Page<Challenge> = jpaRepository.findAllBy(pageable)
     override fun findById(id: UUID): Optional<Challenge> = jpaRepository.findById(id)
     override fun deleteById(id: UUID) = jpaRepository.deleteById(id)
+    override fun findAllByPublishedIsTrue(pageable: Pageable): Page<Challenge> = jpaRepository.findAllByPublishedIsTrue(pageable)
+    override fun findByIdAndPublishedIsTrue(id: UUID): Optional<Challenge> = jpaRepository.findByIdAndPublishedIsTrue(id)
 }

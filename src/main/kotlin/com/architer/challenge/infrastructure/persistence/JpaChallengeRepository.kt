@@ -4,8 +4,11 @@ import com.architer.challenge.domain.model.Challenge
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import java.util.Optional
 import java.util.UUID
 
 interface JpaChallengeRepository : JpaRepository<Challenge, UUID> {
     fun findAllBy(pageable: Pageable): Page<Challenge>
+    fun findAllByPublishedIsTrue(pageable: Pageable): Page<Challenge>
+    fun findByIdAndPublishedIsTrue(id: UUID): Optional<Challenge>
 }

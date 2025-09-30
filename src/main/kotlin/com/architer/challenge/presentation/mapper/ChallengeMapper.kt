@@ -20,6 +20,7 @@ class ChallengeMapper {
             content = request.content,
             category = request.category,
             difficulty = request.difficulty,
+            published = request.published
         )
     }
 
@@ -33,6 +34,7 @@ class ChallengeMapper {
             content = request.content
             category = request.category
             difficulty = request.difficulty
+            published = request.published
         }
     }
 
@@ -47,6 +49,7 @@ class ChallengeMapper {
             content = challenge.content,
             category = challenge.category,
             difficulty = challenge.difficulty,
+            published = challenge.published,
         )
     }
 

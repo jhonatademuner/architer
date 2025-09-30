@@ -42,6 +42,9 @@ data class Challenge(
     @Enumerated(EnumType.STRING)
     var difficulty: ChallengeDifficulty,
 
+    @Column(name = "published", nullable = false)
+    var published: Boolean = false,
+
     @LastModifiedDate
     @Column(name = "last_modified_at", nullable = false)
     var lastModifiedAt: LocalDateTime? = null,
