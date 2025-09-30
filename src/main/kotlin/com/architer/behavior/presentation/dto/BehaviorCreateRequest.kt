@@ -7,4 +7,5 @@ data class BehaviorCreateRequest (
     val overview: String,
     val description: String,
     val content: String,
+    val published: Boolean = true
 )

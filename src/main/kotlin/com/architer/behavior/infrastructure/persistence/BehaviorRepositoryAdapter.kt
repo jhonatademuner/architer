@@ -16,4 +16,6 @@ class BehaviorRepositoryAdapter(
     override fun findAll(pageable: Pageable): Page<Behavior> = jpaRepository.findAllBy(pageable)
     override fun findById(id: UUID): Optional<Behavior> = jpaRepository.findById(id)
     override fun deleteById(id: UUID): Unit = jpaRepository.deleteById(id)
+    override fun findAllByPublishedIsTrue(pageable: Pageable): Page<Behavior> = jpaRepository.findAllByPublishedIsTrue(pageable)
+    override fun findByIdAndPublishedIsTrue(id: UUID): Optional<Behavior> = jpaRepository.findByIdAndPublishedIsTrue(id)
 }

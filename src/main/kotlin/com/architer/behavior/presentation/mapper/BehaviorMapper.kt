@@ -17,7 +17,8 @@ class BehaviorMapper {
             title = request.title,
             overview = request.overview,
             content = request.content,
-            description = request.description
+            description = request.description,
+            published = request.published
         )
     }
 
@@ -29,6 +30,7 @@ class BehaviorMapper {
             overview = request.overview
             description = request.description
             content = request.content
+            published = request.published
         }
     }
 
@@ -41,6 +43,7 @@ class BehaviorMapper {
             overview = behavior.overview,
             description = behavior.description,
             content = behavior.content,
+            published = behavior.published
         )
     }
 

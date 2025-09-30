@@ -40,6 +40,9 @@ data class Behavior(
     @Column(name = "content", nullable = false)
     var content: String,
 
+    @Column(name = "published", nullable = false)
+    var published: Boolean = false,
+
     @LastModifiedDate
     @Column(name = "last_modified_at", nullable = false)
     var lastModifiedAt: LocalDateTime? = null,

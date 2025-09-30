@@ -10,4 +10,5 @@ data class BehaviorResponse(
     var overview: String,
     var description: String,
     var content: String,
+    var published: Boolean
 )

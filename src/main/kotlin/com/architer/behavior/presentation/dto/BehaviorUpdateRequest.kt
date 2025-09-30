@@ -10,4 +10,5 @@ data class BehaviorUpdateRequest(
     val overview: String,
     val description: String,
     val content: String,
+    val published: Boolean,
 )
