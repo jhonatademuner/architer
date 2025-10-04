@@ -11,4 +11,5 @@ interface JpaBehaviorRepository : JpaRepository<Behavior, UUID> {
     fun findAllBy(pageable: Pageable): Page<Behavior>
     fun findAllByPublishedIsTrue(pageable: Pageable): Page<Behavior>
     fun findByIdAndPublishedIsTrue(id: UUID): Optional<Behavior>
+    fun findByExternalId(externalId: String): Optional<Behavior>
 }

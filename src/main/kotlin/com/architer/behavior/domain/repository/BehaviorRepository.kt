@@ -11,6 +11,7 @@ interface BehaviorRepository {
     fun findAll(pageable: Pageable): Page<Behavior>
     fun findById(id: UUID): Optional<Behavior>
     fun deleteById(id: UUID): Unit
+    fun findByExternalId(externalId: String): Optional<Behavior>
     fun findAllByPublishedIsTrue(pageable: Pageable): Page<Behavior>
     fun findByIdAndPublishedIsTrue(id: UUID): Optional<Behavior>
 }
