@@ -45,20 +45,4 @@ data class AppSetting(
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: LocalDateTime? = null,
-){
-    fun getBooleanValue(): Boolean {
-        return settingValue.toBoolean()
-    }
-
-    fun toStringValue(): String {
-        return settingValue
-    }
-
-    fun toIntValue(): Int {
-        return settingValue.toInt()
-    }
-
-    fun toFloatValue(): Float {
-        return settingValue.toFloat()
-    }
-}
+)

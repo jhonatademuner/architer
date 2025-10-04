@@ -12,7 +12,7 @@ class AppSettingMapper {
         return AppSetting(
             id = response.id,
             settingKey = response.settingKey,
-            settingValue = response.settingValue,
+            settingValue = response.getValueAsString(),
             description = response.description,
             valueType = response.valueType
         )
