@@ -2,6 +2,7 @@ package com.architer.ai.domain.model.message
 
 import com.fasterxml.jackson.annotation.*
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class AssistantCompoundMessage(
     override val role: String,
     var content: List<ContentItem>
@@ -27,6 +28,7 @@ data class AssistantCompoundMessage(
         text, image_url
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     sealed class ContentItem {
         abstract val type: ContentType
     }

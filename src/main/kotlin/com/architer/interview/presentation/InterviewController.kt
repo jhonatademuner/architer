@@ -35,13 +35,13 @@ class InterviewController(
 
     @GetMapping
     fun findAll(
-        @RequestParam(required = false) term: String?,
+        @RequestParam(required = false) searchTerm: String?,
         @RequestParam(required = false) status: InterviewStatus?,
         @RequestParam(required = false) seniority: InterviewSeniority?,
         @RequestParam page: Int = 1,
         @RequestParam size: Int = 10
     ): PaginatedList<InterviewSimplifiedResponse> {
-        return service.findAll(term, status, seniority, page, size)
+        return service.findAllWithFilters(searchTerm, status, seniority, page, size)
     }
 
     @GetMapping("/{id}")

@@ -1,7 +1,7 @@
 package com.architer.interview.domain.model.enums
 
 enum class InterviewStatus {
-    ONGOING,
+    ON_GOING,
     WAITING_FOR_FEEDBACK,
-    COMPLETED
+    FINISHED
 }

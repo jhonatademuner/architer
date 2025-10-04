@@ -22,9 +22,9 @@ class InterviewRepositoryAdapter(
     override fun findByIdAndUserId(id: UUID, userId: UUID): Optional<Interview> = jpaRepository.findByIdAndUserId(id, userId)
     override fun findAllByUserIdWithFilters(
         userId: UUID,
-        term: String?,
+        searchTerm: String?,
         status: InterviewStatus?,
         seniority: InterviewSeniority?,
         pageable: Pageable
-    ): Page<Interview> = jpaRepository.findAllByUserIdWithFilters(userId, term, status, seniority, pageable)
+    ): Page<Interview> = jpaRepository.findAllByUserIdWithFilters(userId, searchTerm, status, seniority, pageable)
 }

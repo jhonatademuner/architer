@@ -1,7 +1,8 @@
 package com.architer.interview.infrastructure.rabbitmq.listener
 
-import com.architer.ai.domain.model.message.AssistantMessage
 import com.architer.ai.infrastructure.AssistantPort
+import com.architer.behavior.domain.repository.BehaviorRepository
+import com.architer.interview.application.MessageUtils
 import com.architer.interview.domain.model.enums.InterviewRole
 import com.architer.interview.domain.model.enums.InterviewStatus
 import com.architer.interview.domain.repository.InterviewMessageRepository
@@ -12,11 +13,13 @@ import com.architer.interview.presentation.mapper.InterviewMessageMapper
 import com.architer.messaging.domain.model.InterviewEvent
 import com.architer.messaging.infrastructure.constants.MessagingConstants
 import com.architer.shared.exception.ResourceNotFoundException
+import com.architer.shared.infrastructure.AppSettingsPort
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Component
 class InterviewFeedbackRequestedListener(
@@ -25,9 +28,13 @@ class InterviewFeedbackRequestedListener(
     private val messageMapper: InterviewMessageMapper,
     private val interviewFeedbackMapper: InterviewFeedbackMapper,
     private val assistantPort: AssistantPort,
+    private val settingsPort: AppSettingsPort,
+    private val messageUtils: MessageUtils
 ) {
 
     private val log = KotlinLogging.logger {}
+
+    private final val INTERVIEWS_FEEDBACK_PROMPT_KEY = "INTERVIEWS_FEEDBACK_PROMPT"
 
     @RabbitListener(queues = [MessagingConstants.Queues.INTERVIEW_FEEDBACK_REQUESTED], containerFactory = "rabbitListenerContainerFactory")
     @Transactional
@@ -39,37 +46,27 @@ class InterviewFeedbackRequestedListener(
         
         log.debug { "Found interview: ${interview.id} with behavior: ${interview.behavior.id} and challenge: ${interview.challenge.id}" }
 
-        val behaviorMessage = AssistantMessage(
-            role = InterviewRole.system.toString(),
-            content = interview.behavior.toString()
+        val interviewFeedbackPrompt = settingsPort.findBySettingKey(INTERVIEWS_FEEDBACK_PROMPT_KEY).getValueAsString()
+
+        val seniorityPrompt = "Consider that the candidate is at the ${interview.seniority} level."
+
+        val messages = messageUtils.assembleSystemMessages(
+            interviewFeedbackPrompt,
+            seniorityPrompt,
+            interview.behavior.toString(),
+            interview.challenge.toString()
         )
 
-        val challengeMessage = AssistantMessage(
-            role = InterviewRole.system.toString(),
-            content = interview.challenge.toString()
-        )
-
-        val seniorityLevelMessage = AssistantMessage(
-            role = InterviewRole.system.toString(),
-            content = "Consider that the candidate is at the ${interview.seniority} level."
-        )
-
-        val assistantMessages = mutableListOf(behaviorMessage, seniorityLevelMessage, challengeMessage)
         val interviewMessages = messageRepository
             .findAllByInterviewIdAndRoleNot(event.interviewId, InterviewRole.system)
             .map(messageMapper::toAssistantMessage)
-        
-        log.debug { "Found ${interviewMessages.size} interview messages to include in context" }
-        assistantMessages.addAll(interviewMessages)
-        
-        log.info { "Requesting AI feedback with ${assistantMessages.size} messages" }
-        val assistantResponse = assistantPort.requestChatCompletion(assistantMessages, InterviewFeedbackResponseFormat.getOpenAISchema())
-        log.info { "AI Response: ${assistantResponse.getMessage()}" }
+
+        messages.addAll(interviewMessages)
+
+        val assistantResponse = assistantPort.requestChatCompletion(messages, InterviewFeedbackResponseFormat.getOpenAISchema())
         val interviewFeedback = interviewFeedbackMapper.toEntity(assistantResponse.getMessage(), interview)
         interview.feedback = interviewFeedback
-        interview.status = InterviewStatus.COMPLETED
+        interview.status = InterviewStatus.FINISHED
         interviewRepository.save(interview)
-        log.info { "Received AI feedback response for interview: ${event.interviewId}" }
-        log.debug { "AI Response: $assistantResponse" }
     }
 }

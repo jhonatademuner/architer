@@ -17,7 +17,7 @@ interface InterviewRepository {
      fun findByIdAndUserId(id: UUID, userId: UUID): Optional<Interview>
      fun findAllByUserIdWithFilters(
          userId: UUID,
-         term: String?,
+         searchTerm: String?,
          status: InterviewStatus?,
          seniority: InterviewSeniority?,
          pageable: Pageable

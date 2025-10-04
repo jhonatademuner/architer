@@ -26,7 +26,7 @@ data class Interview (
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    var status: InterviewStatus = InterviewStatus.ONGOING,
+    var status: InterviewStatus = InterviewStatus.ON_GOING,
 
     @Column(name = "duration", nullable = true)
     var duration: Int? = null, // in seconds

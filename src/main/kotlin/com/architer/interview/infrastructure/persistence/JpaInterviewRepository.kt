@@ -19,13 +19,13 @@ interface JpaInterviewRepository : JpaRepository<Interview, UUID> {
     @Query("""
         SELECT i FROM Interview i 
         WHERE i.userId = :userId 
-        AND (:term IS NULL OR i.behavior.title LIKE %:term% OR i.challenge.title LIKE %:term%)
+        AND (:searchTerm IS NULL OR i.behavior.title LIKE %:searchTerm% OR i.challenge.title LIKE %:searchTerm%)
         AND (:status IS NULL OR i.status = :status)
         AND (:seniority IS NULL OR i.seniority = :seniority)
     """)
     fun findAllByUserIdWithFilters(
         @Param("userId") userId: UUID,
-        @Param("term") term: String?,
+        @Param("searchTerm") searchTerm: String?,
         @Param("status") status: InterviewStatus?,
         @Param("seniority") seniority: InterviewSeniority?,
         pageable: Pageable
